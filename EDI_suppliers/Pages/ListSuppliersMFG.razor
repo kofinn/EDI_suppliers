@@ -1,0 +1,55 @@
+﻿@using EDI_suppliers.Data
+
+@page "/listsuppliersmfg"
+
+@inject CustomHttpClient Http
+@inject AppSettingsService AppSettingsService
+
+<h2>Employee Details</h2>
+<p>
+    <a href="/addsuppliermfg">Create New Employee</a>
+</p>
+@if (suppliermfg == null)
+{
+    <img src="./basicloader.gif" />
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Dodavatel MFG</th>
+                <th>Jméno dodavatele</th>
+                <th>Kontakt IT</th>
+                <th>Kontakt Log</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var suppliermfg in suppliermfg)
+            {
+                <tr>
+                    <td>@suppliermfg.MfgId</td>
+                    <td>@suppliermfg.Name</td>
+                    <td>@suppliermfg.ContactIt</td>
+                    <td>@suppliermfg.ContactLog</td>
+                    <td>
+                        <a href='/editsuppliermfg/@suppliermfg.Id'>Edit</a>
+                        <a href='/deletesuppliermfg/@suppliermfg.Id'>Delete</a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    SupplierMFG[] suppliermfg;
+    string baseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        suppliermfg = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+    }
+}   
