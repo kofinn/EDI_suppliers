@@ -1,12 +1,15 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/addsuppliermfg"
+@page "/editsuppliermfg/{id}"
 
 @inject CustomHttpClient Http
 @inject NavigationManager NavigationManager
 @inject AppSettingsService AppSettingsService
 
-<h2>Vytvořit Dodavatele</h2>
+<h2>Upravení Dodavatele</h2>
+
+@*<DataAnnotationsValidator />
+    <ValidationSummary />*@
 
 <form>
     <div class="row">
@@ -30,24 +33,30 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <input type="button" class="btn btn-primary" @onclick="@CreateSupplierMFG" value="Save" />
-                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
-            </div>
+        <div class="form-group">
+            <input type="button" class="btn btn-primary" @onclick="@UpdateSupplierMFG" value="Update" />
+            <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
         </div>
     </div>
 </form>
 
 @code {
 
-    SupplierMFG suppliermfg = new SupplierMFG();
+    [Parameter]
+    public string id { get; set; }
     string baseUrl;
 
-    protected async Task CreateSupplierMFG()
+    SupplierMFG suppliermfg = new SupplierMFG();
+
+    protected override async Task OnInitializedAsync()
     {
         baseUrl = AppSettingsService.GetBaseUrl();
-        await Http.PostJsonAsync(baseUrl + "/api/suppliermfg/create", suppliermfg);
+        suppliermfg = await Http.GetJsonAsync<SupplierMFG>(baseUrl + "/api/suppliermfg/details/" + id);
+    }
+
+        protected async Task UpdateSupplierMFG()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/suppliermfg/edit/" + id, suppliermfg);
         NavigationManager.NavigateTo("listsuppliersmfg");
     }
 
