@@ -27,12 +27,12 @@ namespace EDI_suppliers.Data
 
             [HttpPost]
             [Route("Create")]
-            public async Task<bool> Create([FromBody]SupplierMFG SupplierMFG)
+            public async Task<bool> Create([FromBody]SupplierMFG suppliermfg)
             {
                 if (ModelState.IsValid)
                 {
-                    SupplierMFG.Id = Guid.NewGuid().ToString();
-                    _dbContext.Add(SupplierMFG);
+                    suppliermfg.Id = Guid.NewGuid().ToString();
+                    _dbContext.Add(suppliermfg);
                     try
                     {
                         await _dbContext.SaveChangesAsync();
@@ -58,14 +58,14 @@ namespace EDI_suppliers.Data
 
             [HttpPut]
             [Route("Edit/{id}")]
-            public async Task<bool> Edit(string id, [FromBody]SupplierMFG SupplierMFG)
+            public async Task<bool> Edit(string id, [FromBody]SupplierMFG suppliermfg)
             {
-                if (id != SupplierMFG.Id)
+                if (id != suppliermfg.Id)
                 {
                     return false;
                 }
 
-                _dbContext.Entry(SupplierMFG).State = EntityState.Modified;
+                _dbContext.Entry(suppliermfg).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -74,13 +74,13 @@ namespace EDI_suppliers.Data
             [Route("Delete/{id}")]
             public async Task<bool> DeleteConfirmed(string id)
             {
-                var SupplierMFG = await _dbContext.SupplierMFG.FindAsync(id);
-                if (SupplierMFG == null)
+                var suppliermfg = await _dbContext.SupplierMFG.FindAsync(id);
+                if (suppliermfg == null)
                 {
                     return false;
                 }
 
-                _dbContext.SupplierMFG.Remove(SupplierMFG);
+                _dbContext.SupplierMFG.Remove(suppliermfg);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }

@@ -7,6 +7,7 @@
 @inject AppSettingsService AppSettingsService
 
 <h2>Vymazání Dodavatele</h2>
+<p>Opravdu chcete vymazat dodavatele s ID :<b> @id</b></p>
 
 @*<DataAnnotationsValidator />
     <ValidationSummary />*@
@@ -34,7 +35,7 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <input type="button" class="btn btn-primary" @onclick="@DeleteSupplierMFG" value="Delete" />
+            <input type="button" class="btn btn-primary" @onclick="@Delete" value="Delete" />
             <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
         </div>
     </div>
@@ -54,9 +55,9 @@
         suppliermfg = await Http.GetJsonAsync<SupplierMFG>(baseUrl + "/api/suppliermfg/details/" + id);
     }
 
-        protected async Task DeleteSupplierMFG()
+    protected async Task Delete()
     {
-        await Http.PutJsonAsync(baseUrl + "/api/suppliermfg/delete/" + id, suppliermfg);
+        await Http.DeleteAsync(baseUrl + "/api/suppliermfg/delete/" + id);
         NavigationManager.NavigateTo("listsuppliersmfg");
     }
 
