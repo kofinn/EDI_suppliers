@@ -12,7 +12,7 @@ namespace EDI_suppliers.Data
         public string Id { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Dodavatelské číslo MFG")]
-        public int MfgId { get; set; }
+        public string MfgId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Jméno dodavatele")]
         public string Name { get; set; }

@@ -8,36 +8,44 @@
 
 <h2>Vytvořit Dodavatele</h2>
 
-<form>
+<EditForm Model="@suppliermfg" OnValidSubmit="@CreateSupplierMFG">
+    <DataAnnotationsValidator />
+
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
-                <label for="Name" class="control-label">Dodavatelské číslo MFG</label>
-                <input for="Name" class="form-control" @bind="@suppliermfg.MfgId" />
+                <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
+                <ValidationMessage For="@(() => suppliermfg.MfgId)" />
+                <input for="MfgId" class="form-control" @bind="@suppliermfg.MfgId" />
             </div>
             <div class="form-group">
-                <label for="Department" class="control-label">Jméno dodavatele</label>
-                <input for="Department" class="form-control" @bind="@suppliermfg.Name" />
+                <label for="Name" class="control-label">Jméno dodavatele</label>
+                <ValidationMessage For="@(() => suppliermfg.Name)" />
+                <input for="Name" class="form-control" @bind="@suppliermfg.Name" />
             </div>
             <div class="form-group">
-                <label for="Designation" class="control-label">Kontakt IT</label>
-                <input for="Designation" class="form-control" @bind="@suppliermfg.ContactIt" />
+                <label for="ContactIt" class="control-label">Kontakt IT</label>
+                <ValidationMessage For="@(() => suppliermfg.ContactIt)" />
+                <input for="ContactIt" class="form-control" @bind="@suppliermfg.ContactIt" />
             </div>
             <div class="form-group">
-                <label for="Company" class="control-label">Kontakt Logistika</label>
-                <input for="Company" class="form-control" @bind="@suppliermfg.ContactLog" />
+                <label for="ContactLog" class="control-label">Kontakt Logistika</label>
+                <ValidationMessage For="@(() => suppliermfg.ContactLog)" />
+                <input for="ContactLog" class="form-control" @bind="@suppliermfg.ContactLog" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <input type="button" class="btn btn-primary" @onclick="@CreateSupplierMFG" value="Save" />
+                <button type="submit">Uložit</button>
                 <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
             </div>
         </div>
     </div>
-</form>
+</EditForm>
+
+
 
 @code {
 
