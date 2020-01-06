@@ -8,9 +8,7 @@
 
     <h2>Employee Details</h2>
 
-    <AuthorizeView>
 
-        <Authorized>
             <p>
                 <a href="/addsuppliermfg">Create New Employee</a>
             </p>
@@ -48,8 +46,7 @@
                     </tbody>
                 </table>
             }
-        </Authorized>
-        <NotAuthorized>
+
             @if (suppliermfg == null)
             {
                 <h3>Načítání....</h3>
@@ -79,8 +76,7 @@
                     </tbody>
                 </table>
             }
-        </NotAuthorized>
-    </AuthorizeView>
+
 
         @code {
 

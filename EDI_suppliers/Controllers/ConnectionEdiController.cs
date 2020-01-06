@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using EDI_suppliers.Data;
 
-namespace EDI_suppliers.Data
+namespace EDI_suppliers.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

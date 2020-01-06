@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EDI_suppliers.Migrations
 {
-    public partial class Preap055 : Migration
+    public partial class czpreap055 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -74,7 +74,7 @@ namespace EDI_suppliers.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    MfgId = table.Column<int>(nullable: false),
+                    MfgId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     ContactIt = table.Column<string>(nullable: true),
                     ContactLog = table.Column<string>(nullable: true)

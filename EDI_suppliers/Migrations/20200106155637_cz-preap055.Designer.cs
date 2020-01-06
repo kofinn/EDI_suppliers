@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDI_suppliers.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200105144621_SupplierMFGaktualizace")]
-    partial class SupplierMFGaktualizace
+    [Migration("20200106155637_cz-preap055")]
+    partial class czpreap055
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

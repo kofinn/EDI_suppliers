@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EDI_suppliers.Areas.Identity;
 using EDI_suppliers.Data;
+using EDI_suppliers.Services;
 using Microsoft.OpenApi.Models;
 
 namespace EDI_suppliers

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace EDI_suppliers.Data
+namespace EDI_suppliers.Services
 {
     public class AppSettingsService
     {

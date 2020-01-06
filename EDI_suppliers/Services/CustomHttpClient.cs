@@ -3,7 +3,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EDI_suppliers.Data
+
+namespace EDI_suppliers.Services
 {
     public class CustomHttpClient : HttpClient
     {
