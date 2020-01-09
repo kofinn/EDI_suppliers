@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EDI_suppliers.Migrations
 {
-    public partial class czpreap055 : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,10 +50,8 @@ namespace EDI_suppliers.Migrations
                 name: "ConnectionEdi",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    Plant = table.Column<string>(nullable: true),
-                    Edi = table.Column<bool>(nullable: false),
-                    ConnectionType = table.Column<string>(nullable: true),
+                    EdiId = table.Column<string>(nullable: false),
+                    ConnectionType = table.Column<string>(nullable: false),
                     Calloff = table.Column<bool>(nullable: false),
                     Asn = table.Column<bool>(nullable: false),
                     SettingMfg = table.Column<bool>(nullable: false),
@@ -66,22 +64,7 @@ namespace EDI_suppliers.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConnectionEdi", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SupplierMFG",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    MfgId = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    ContactIt = table.Column<string>(nullable: true),
-                    ContactLog = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SupplierMFG", x => x.Id);
+                    table.PrimaryKey("PK_ConnectionEdi", x => x.EdiId);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,6 +173,29 @@ namespace EDI_suppliers.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SupplierMFG",
+                columns: table => new
+                {
+                    SupplierId = table.Column<string>(nullable: false),
+                    MfgId = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    ContactIt = table.Column<string>(nullable: true),
+                    ContactLog = table.Column<string>(nullable: true),
+                    Edi = table.Column<bool>(nullable: false),
+                    ConnectionEdiEdiId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupplierMFG", x => x.SupplierId);
+                    table.ForeignKey(
+                        name: "FK_SupplierMFG_ConnectionEdi_ConnectionEdiEdiId",
+                        column: x => x.ConnectionEdiEdiId,
+                        principalTable: "ConnectionEdi",
+                        principalColumn: "EdiId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -228,6 +234,11 @@ namespace EDI_suppliers.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SupplierMFG_ConnectionEdiEdiId",
+                table: "SupplierMFG",
+                column: "ConnectionEdiEdiId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -248,9 +259,6 @@ namespace EDI_suppliers.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ConnectionEdi");
-
-            migrationBuilder.DropTable(
                 name: "SupplierMFG");
 
             migrationBuilder.DropTable(
@@ -258,6 +266,9 @@ namespace EDI_suppliers.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ConnectionEdi");
         }
     }
 }

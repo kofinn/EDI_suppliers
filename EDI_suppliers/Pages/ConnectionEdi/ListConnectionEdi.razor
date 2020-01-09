@@ -1,16 +1,17 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/listsuppliersmfg"
+@page "/listconnectionedi"
 
 @inject CustomHttpClient Http
 @inject AppSettingsService AppSettingsService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-    <h2>Employee Details</h2>
-
+    <h2>Přehled EDI spojeni</h2>
+    <AuthorizeView>
+        <Authorized>
 
             <p>
-                <a href="/addsuppliermfg">Create New Employee</a>
+                <a href="/addconnectionedi">Vytvořit nové EDI spojení</a>
             </p>
 
             @if (suppliermfg == null)
@@ -22,7 +23,7 @@
                 <table class='table'>
                     <thead>
                         <tr>
-                            <th>Dodavatel MFG</th>
+                            <th>EDI</th>
                             <th>Jméno dodavatele</th>
                             <th>Kontakt IT</th>
                             <th>Kontakt Log</th>
@@ -37,8 +38,8 @@
                                 <td>@suppliermfg.ContactIt</td>
                                 <td>@suppliermfg.ContactLog</td>
                                 <td>
-                                    <a href='/editsuppliermfg/@suppliermfg.Id'>Edit</a>
-                                    <a href='/deletesuppliermfg/@suppliermfg.Id'>Delete</a>
+                                    <a href='/editsuppliermfg/@suppliermfg.SupplierId'>Edit</a>
+                                    <a href='/deletesuppliermfg/@suppliermfg.SupplierId'>Delete</a>
                                 </td>
                             </tr>
 
@@ -46,7 +47,8 @@
                     </tbody>
                 </table>
             }
-
+            </Authorized>
+        <NotAuthorized>
             @if (suppliermfg == null)
             {
                 <h3>Načítání....</h3>
@@ -76,6 +78,8 @@
                     </tbody>
                 </table>
             }
+        </NotAuthorized>
+</AuthorizeView>
 
 
         @code {

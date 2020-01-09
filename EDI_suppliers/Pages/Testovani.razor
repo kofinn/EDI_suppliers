@@ -1,0 +1,34 @@
+﻿@using EDI_suppliers.Data
+
+@page "/testovani"
+
+@inject CustomHttpClient Http
+@inject NavigationManager NavigationManager
+@inject AppSettingsService AppSettingsService
+
+@if (suppliermfg == null)
+{
+    <p>nacitani</p>
+}
+else
+{
+    <select id="suppliermfg">
+        <option></option>
+        @foreach (var suppliermfg in suppliermfg)
+        {
+            <option value="@suppliermfg.MfgId">@suppliermfg.Name</option>
+        }
+    </select>
+}
+
+@code {
+    SupplierMFG[] suppliermfg;
+    string baseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        suppliermfg = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+    }
+
+}

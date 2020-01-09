@@ -32,7 +32,7 @@ namespace EDI_suppliers.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    suppliermfg.Id = Guid.NewGuid().ToString();
+                    suppliermfg.SupplierId = Guid.NewGuid().ToString();
                     _dbContext.Add(suppliermfg);
                     try
                     {
@@ -61,7 +61,7 @@ namespace EDI_suppliers.Controllers
             [Route("Edit/{id}")]
             public async Task<bool> Edit(string id, [FromBody]SupplierMFG suppliermfg)
             {
-                if (id != suppliermfg.Id)
+                if (id != suppliermfg.SupplierId)
                 {
                     return false;
                 }

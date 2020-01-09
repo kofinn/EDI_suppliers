@@ -9,7 +9,7 @@ namespace EDI_suppliers.Data
     public class SupplierMFG
     {
         [Key]
-        public string Id { get; set; }
+        public string SupplierId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Dodavatelské číslo MFG")]
         public string MfgId { get; set; }
@@ -20,5 +20,10 @@ namespace EDI_suppliers.Data
         public string ContactIt { get; set; }
         [Display(Name = "Kontakt LOG")]
         public string ContactLog { get; set; }
+        [Required(ErrorMessage = "Hodnota musí být zadána")]
+        [Display(Name = "EDI")]
+        public Boolean Edi { get; set; }
+        [Display(Name = "EDI spojení")]
+        public ConnectionEdi ConnectionEdi { get; set; }
     }
 }

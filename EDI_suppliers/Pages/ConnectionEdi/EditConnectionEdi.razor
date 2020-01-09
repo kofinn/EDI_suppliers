@@ -1,0 +1,75 @@
+﻿@using EDI_suppliers.Data
+
+@page "/editconnectionedi/{id}"
+
+@inject CustomHttpClient Http
+@inject NavigationManager NavigationManager
+@inject AppSettingsService AppSettingsService
+
+<h2>Upravení Dodavatele</h2>
+
+@*<DataAnnotationsValidator />
+    <ValidationSummary />*@
+
+<EditForm Model="@suppliermfg" OnValidSubmit="@UpdateSupplierMFG">
+    <DataAnnotationsValidator />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
+                <ValidationMessage For="@(() => suppliermfg.MfgId)" />
+                <input for="MfgId" class="form-control" @bind="@suppliermfg.MfgId" />
+            </div>
+            <div class="form-group">
+                <label for="Name" class="control-label">Jméno dodavatele</label>
+                <ValidationMessage For="@(() => suppliermfg.Name)" />
+                <input for="Name" class="form-control" @bind="@suppliermfg.Name" />
+            </div>
+            <div class="form-group">
+                <label for="ContactIt" class="control-label">Kontakt IT</label>
+                <ValidationMessage For="@(() => suppliermfg.ContactIt)" />
+                <input for="ContactIt" class="form-control" @bind="@suppliermfg.ContactIt" />
+            </div>
+            <div class="form-group">
+                <label for="ContactLog" class="control-label">Kontakt Logistika</label>
+                <ValidationMessage For="@(() => suppliermfg.ContactLog)" />
+                <input for="ContactLog" class="form-control" @bind="@suppliermfg.ContactLog" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button type="submit">Uložit</button>
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+    string baseUrl;
+
+    SupplierMFG suppliermfg = new SupplierMFG();
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        suppliermfg = await Http.GetJsonAsync<SupplierMFG>(baseUrl + "/api/suppliermfg/details/" + id);
+    }
+
+        protected async Task UpdateSupplierMFG()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/suppliermfg/edit/" + id, suppliermfg);
+        NavigationManager.NavigateTo("listsuppliersmfg");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("listsuppliersmfg");
+    }
+}   

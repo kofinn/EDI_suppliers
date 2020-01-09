@@ -22,19 +22,19 @@ namespace EDI_suppliers.Controllers
 
         [HttpGet]
         [Route("Get")]
-        public async Task<List<SupplierMFG>> Get()
+        public async Task<List<ConnectionEdi>> Get()
         {
-            return await _dbContext.SupplierMFG.ToListAsync();
+            return await _dbContext.ConnectionEdi.ToListAsync();
         }
 
         [HttpPost]
         [Route("Create")]
-        public async Task<bool> Create([FromBody]SupplierMFG SupplierMFG)
+        public async Task<bool> Create([FromBody]ConnectionEdi ConnectionEdi)
         {
             if (ModelState.IsValid)
             {
-                SupplierMFG.Id = Guid.NewGuid().ToString();
-                _dbContext.Add(SupplierMFG);
+                ConnectionEdi.EdiId = Guid.NewGuid().ToString();
+                _dbContext.Add(ConnectionEdi);
                 try
                 {
                     await _dbContext.SaveChangesAsync();
@@ -53,21 +53,21 @@ namespace EDI_suppliers.Controllers
 
         [HttpGet]
         [Route("Details/{id}")]
-        public async Task<SupplierMFG> Details(string id)
+        public async Task<ConnectionEdi> Details(string id)
         {
-            return await _dbContext.SupplierMFG.FindAsync(id);
+            return await _dbContext.ConnectionEdi.FindAsync(id);
         }
 
         [HttpPut]
         [Route("Edit/{id}")]
-        public async Task<bool> Edit(string id, [FromBody]SupplierMFG SupplierMFG)
+        public async Task<bool> Edit(string id, [FromBody]ConnectionEdi ConnectionEdi)
         {
-            if (id != SupplierMFG.Id)
+            if (id != ConnectionEdi.EdiId)
             {
                 return false;
             }
 
-            _dbContext.Entry(SupplierMFG).State = EntityState.Modified;
+            _dbContext.Entry(ConnectionEdi).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -76,13 +76,13 @@ namespace EDI_suppliers.Controllers
         [Route("Delete/{id}")]
         public async Task<bool> DeleteConfirmed(string id)
         {
-            var SupplierMFG = await _dbContext.SupplierMFG.FindAsync(id);
-            if (SupplierMFG == null)
+            var ConnectionEdi = await _dbContext.ConnectionEdi.FindAsync(id);
+            if (ConnectionEdi == null)
             {
                 return false;
             }
 
-            _dbContext.SupplierMFG.Remove(SupplierMFG);
+            _dbContext.ConnectionEdi.Remove(ConnectionEdi);
             await _dbContext.SaveChangesAsync();
             return true;
         }

@@ -33,6 +33,30 @@
                 <ValidationMessage For="@(() => suppliermfg.ContactLog)" />
                 <input for="ContactLog" class="form-control" @bind="@suppliermfg.ContactLog" />
             </div>
+            <div class="form-group">
+                <label for="Edi" class="control-label">EDI</label>
+                <ValidationMessage For="@(() => suppliermfg.Edi)" />
+                <input for="ContactLog" type="checkbox" @bind="@suppliermfg.Edi" />
+            </div>
+            <div class="form-group">
+                <label for="EdiConnection" class="control-label">EDI partner</label>
+                <ValidationMessage For="@(() => suppliermfg.Edi)" />
+                @if (connectionEdis == null)
+                {
+                    <p>nacitani</p>
+                }
+                else
+                {
+                    <select id="suppliermfg">
+                        <option></option>
+                        @foreach (var connectionEdis in connectionEdis)
+                        {
+                            <option value="@connectionEdis.EdiId">@connectionEdis.Name</option>
+                        }
+                    </select>
+                }
+
+            </div>
         </div>
     </div>
     <div class="row">
@@ -50,7 +74,14 @@
 @code {
 
     SupplierMFG suppliermfg = new SupplierMFG();
+    ConnectionEdi[] connectionEdis;
     string baseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        connectionEdis = await Http.GetJsonAsync<ConnectionEdi[]>(baseUrl + "/api/connectionedi/get");
+    }
 
     protected async Task CreateSupplierMFG()
     {
