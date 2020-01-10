@@ -6,95 +6,72 @@
 @inject AppSettingsService AppSettingsService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-    <h2>Přehled EDI spojeni</h2>
-    <AuthorizeView>
-        <Authorized>
+<h2>Přehled EDI spojení</h2>
+<p>
+    <a href="/addconnectionedi">Vytvořit nového dodavatele</a>
+</p>
 
-            <p>
-                <a href="/addconnectionedi">Vytvořit nové EDI spojení</a>
-            </p>
-
-            @if (suppliermfg == null)
+@if (connectionEdis == null)
+{
+    <h3>Načítání....</h3>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Dodavatel MFG</th>
+                <th>Jméno dodavatele</th>
+                <th>Kontakt IT</th>
+                <th>Kontakt Log</th>
+                <th>EDI</th>
+                <th>EDI Partner</th>
+                <th>EDI Partner</th>
+                <th>EDI Partner</th>
+                <th>EDI Partner</th>
+                <th>EDI Partner</th>
+                <th>EDI Partner</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var connectionEdis in connectionEdis)
             {
-                <h3>Načítání....</h3>
+            <tr>
+                <td>@connectionEdis.ConnectionType</td>
+                <td>@connectionEdis.Calloff</td>
+                <td>@connectionEdis.Asn</td>
+                <td>@connectionEdis.SettingMfg</td>
+                <td>@connectionEdis.SettingEdi</td>
+                <td>@connectionEdis.Remark</td>
+                <td>@connectionEdis.Name</td>
+                <td>@connectionEdis.Gateway</td>
+                <td>@connectionEdis.SSID</td>
+                <td>@connectionEdis.SFID</td>
+                <td>@connectionEdis.SupplierMFG</td>
+                <td>
+                    <a href='/editconnectionedi/@connectionEdis.Id'>Edit</a>
+                    <a href='/deleteconnectionedi/@connectionEdis.Id'>Delete</a>
+                </td>
+            </tr>
+
             }
-            else
-            {
-                <table class='table'>
-                    <thead>
-                        <tr>
-                            <th>EDI</th>
-                            <th>Jméno dodavatele</th>
-                            <th>Kontakt IT</th>
-                            <th>Kontakt Log</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var suppliermfg in suppliermfg)
-                        {
-                            <tr>
-                                <td>@suppliermfg.MfgId</td>
-                                <td>@suppliermfg.Name</td>
-                                <td>@suppliermfg.ContactIt</td>
-                                <td>@suppliermfg.ContactLog</td>
-                                <td>
-                                    <a href='/editsuppliermfg/@suppliermfg.SupplierId'>Edit</a>
-                                    <a href='/deletesuppliermfg/@suppliermfg.SupplierId'>Delete</a>
-                                </td>
-                            </tr>
+        </tbody>
+    </table>
+}
 
-                        }
-                    </tbody>
-                </table>
-            }
-            </Authorized>
-        <NotAuthorized>
-            @if (suppliermfg == null)
-            {
-                <h3>Načítání....</h3>
-            }
-            else
-            {
-                <table class='table'>
-                    <thead>
-                        <tr>
-                            <th>Dodavatel MFG</th>
-                            <th>Jméno dodavatele</th>
-                            <th>Kontakt IT</th>
-                            <th>Kontakt Log</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var suppliermfg in suppliermfg)
-                        {
-                            <tr>
-                                <td>@suppliermfg.MfgId</td>
-                                <td>@suppliermfg.Name</td>
-                                <td>@suppliermfg.ContactIt</td>
-                                <td>@suppliermfg.ContactLog</td>
-                            </tr>
+@code {
 
-                        }
-                    </tbody>
-                </table>
-            }
-        </NotAuthorized>
-</AuthorizeView>
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
 
-        @code {
+    ConnectionEdi[] connectionEdis;
+    string baseUrl;
 
-            // AuthenticationState is available as a CascadingParameter
-            [CascadingParameter]
-            private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-
-            SupplierMFG[] suppliermfg;
-            string baseUrl;
-
-            protected override async Task OnInitializedAsync()
-            {
-                baseUrl = AppSettingsService.GetBaseUrl();
-                suppliermfg = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
-            }
-        }
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        connectionEdis = await Http.GetJsonAsync<ConnectionEdi[]>(baseUrl + "/api/connectionedi/get");
+    }
+}

@@ -9,7 +9,7 @@ namespace EDI_suppliers.Data
     public class ConnectionEdi
     {
         [Key]
-        public string EdiId { get; set; }
+        public string Id { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Typ spojeni")]
         public string ConnectionType { get; set; }
@@ -37,5 +37,5 @@ namespace EDI_suppliers.Data
         public string SFID { get; set; }
 
         public virtual ICollection<SupplierMFG> SupplierMFG  { get; set; }
-}
+    }
 }

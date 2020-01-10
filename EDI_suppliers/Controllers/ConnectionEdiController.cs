@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using EDI_suppliers.Data;
 
 namespace EDI_suppliers.Controllers
 {
     [Route("api/[controller]")]
+    //[Authorize]
     [ApiController]
     public class ConnectionEdiController : ControllerBase
     {
@@ -33,7 +35,7 @@ namespace EDI_suppliers.Controllers
         {
             if (ModelState.IsValid)
             {
-                ConnectionEdi.EdiId = Guid.NewGuid().ToString();
+                ConnectionEdi.Id = Guid.NewGuid().ToString();
                 _dbContext.Add(ConnectionEdi);
                 try
                 {
@@ -62,7 +64,7 @@ namespace EDI_suppliers.Controllers
         [Route("Edit/{id}")]
         public async Task<bool> Edit(string id, [FromBody]ConnectionEdi ConnectionEdi)
         {
-            if (id != ConnectionEdi.EdiId)
+            if (id != ConnectionEdi.Id)
             {
                 return false;
             }

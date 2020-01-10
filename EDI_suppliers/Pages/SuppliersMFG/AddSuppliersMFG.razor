@@ -40,18 +40,18 @@
             </div>
             <div class="form-group">
                 <label for="EdiConnection" class="control-label">EDI partner</label>
-                <ValidationMessage For="@(() => suppliermfg.Edi)" />
+                <ValidationMessage For="@(() => suppliermfg.ConnectionEdi)" />
                 @if (connectionEdis == null)
                 {
                     <p>nacitani</p>
                 }
                 else
                 {
-                    <select id="suppliermfg">
-                        <option></option>
+                    <select @bind="@suppliermfg.ConnectionEdi">
+                        <option value=@(0)></option>
                         @foreach (var connectionEdis in connectionEdis)
                         {
-                            <option value="@connectionEdis.EdiId">@connectionEdis.Name</option>
+                            <option value="@connectionEdis.Id">@connectionEdis.Name</option>
                         }
                     </select>
                 }
@@ -76,6 +76,7 @@
     SupplierMFG suppliermfg = new SupplierMFG();
     ConnectionEdi[] connectionEdis;
     string baseUrl;
+
 
     protected override async Task OnInitializedAsync()
     {

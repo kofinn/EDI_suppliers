@@ -50,21 +50,21 @@ namespace EDI_suppliers.Migrations
                 name: "ConnectionEdi",
                 columns: table => new
                 {
-                    EdiId = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     ConnectionType = table.Column<string>(nullable: false),
                     Calloff = table.Column<bool>(nullable: false),
                     Asn = table.Column<bool>(nullable: false),
                     SettingMfg = table.Column<bool>(nullable: false),
                     SettingEdi = table.Column<bool>(nullable: false),
                     Remark = table.Column<string>(nullable: true),
-                    NameEdi = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
                     Gateway = table.Column<bool>(nullable: false),
                     SSID = table.Column<string>(nullable: true),
                     SFID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConnectionEdi", x => x.EdiId);
+                    table.PrimaryKey("PK_ConnectionEdi", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,16 +183,16 @@ namespace EDI_suppliers.Migrations
                     ContactIt = table.Column<string>(nullable: true),
                     ContactLog = table.Column<string>(nullable: true),
                     Edi = table.Column<bool>(nullable: false),
-                    ConnectionEdiEdiId = table.Column<string>(nullable: true)
+                    ConnectionEdiId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SupplierMFG", x => x.SupplierId);
                     table.ForeignKey(
-                        name: "FK_SupplierMFG_ConnectionEdi_ConnectionEdiEdiId",
-                        column: x => x.ConnectionEdiEdiId,
+                        name: "FK_SupplierMFG_ConnectionEdi_ConnectionEdiId",
+                        column: x => x.ConnectionEdiId,
                         principalTable: "ConnectionEdi",
-                        principalColumn: "EdiId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -236,9 +236,9 @@ namespace EDI_suppliers.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SupplierMFG_ConnectionEdiEdiId",
+                name: "IX_SupplierMFG_ConnectionEdiId",
                 table: "SupplierMFG",
-                column: "ConnectionEdiEdiId");
+                column: "ConnectionEdiId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

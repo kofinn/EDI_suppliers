@@ -21,7 +21,7 @@ namespace EDI_suppliers.Migrations
 
             modelBuilder.Entity("EDI_suppliers.Data.ConnectionEdi", b =>
                 {
-                    b.Property<string>("EdiId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Asn")
@@ -55,17 +55,17 @@ namespace EDI_suppliers.Migrations
                     b.Property<bool>("SettingMfg")
                         .HasColumnType("bit");
 
-                    b.HasKey("EdiId");
+                    b.HasKey("Id");
 
                     b.ToTable("ConnectionEdi");
                 });
 
             modelBuilder.Entity("EDI_suppliers.Data.SupplierMFG", b =>
                 {
-                    b.Property<string>("SupplierId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ConnectionEdiEdiId")
+                    b.Property<string>("ConnectionEdiId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ContactIt")
@@ -85,9 +85,9 @@ namespace EDI_suppliers.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SupplierId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ConnectionEdiEdiId");
+                    b.HasIndex("ConnectionEdiId");
 
                     b.ToTable("SupplierMFG");
                 });
@@ -296,7 +296,7 @@ namespace EDI_suppliers.Migrations
                 {
                     b.HasOne("EDI_suppliers.Data.ConnectionEdi", "ConnectionEdi")
                         .WithMany("SupplierMFG")
-                        .HasForeignKey("ConnectionEdiEdiId");
+                        .HasForeignKey("ConnectionEdiId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

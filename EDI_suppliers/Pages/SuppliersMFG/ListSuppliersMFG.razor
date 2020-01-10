@@ -11,7 +11,7 @@
                 <a href="/addsuppliermfg">Vytvořit nového dodavatele</a>
             </p>
 
-            @if (suppliermfg == null)
+            @if (supplierMFGs == null)
             {
                 <h3>Načítání....</h3>
             }
@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var suppliermfg in suppliermfg)
+                        @foreach (var suppliermfg in supplierMFGs)
                         {
                         <tr>
                             <td>@suppliermfg.MfgId</td>
@@ -39,8 +39,8 @@
                             <td>@suppliermfg.Edi</td>
                             <td>@suppliermfg.ConnectionEdi</td>
                             <td>
-                                <a href='/editsuppliermfg/@suppliermfg.SupplierId'>Edit</a>
-                                <a href='/deletesuppliermfg/@suppliermfg.SupplierId'>Delete</a>
+                                <a href='/editsuppliermfg/@suppliermfg.Id'>Edit</a>
+                                <a href='/deletesuppliermfg/@suppliermfg.Id'>Delete</a>
                             </td>
                         </tr>
 
@@ -56,12 +56,12 @@
             private Task<AuthenticationState> authenticationStateTask { get; set; }
 
 
-            SupplierMFG[] suppliermfg;
+            SupplierMFG[] supplierMFGs;
             string baseUrl;
 
             protected override async Task OnInitializedAsync()
             {
                 baseUrl = AppSettingsService.GetBaseUrl();
-                suppliermfg = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+                supplierMFGs = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
             }
         }
