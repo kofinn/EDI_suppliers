@@ -20,30 +20,30 @@ else
     <table class='table'>
         <thead>
             <tr>
+                <th>Jméno</th>
+                <th>Typ spojení</th>
+                <th>Odvolavky</th>
+                <th>Dodaci listy</th>
+                <th>Nastavení v MFG</th>
+                <th>Nastavení EDI</th>
+                <th>Poznámky</th>
+                <th>Gateway</th>
+                <th>SSID</th>
+                <th>SFID</th>
                 <th>Dodavatel MFG</th>
-                <th>Jméno dodavatele</th>
-                <th>Kontakt IT</th>
-                <th>Kontakt Log</th>
-                <th>EDI</th>
-                <th>EDI Partner</th>
-                <th>EDI Partner</th>
-                <th>EDI Partner</th>
-                <th>EDI Partner</th>
-                <th>EDI Partner</th>
-                <th>EDI Partner</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var connectionEdis in connectionEdis)
             {
             <tr>
+                <td>@connectionEdis.Name</td>
                 <td>@connectionEdis.ConnectionType</td>
                 <td>@connectionEdis.Calloff</td>
                 <td>@connectionEdis.Asn</td>
                 <td>@connectionEdis.SettingMfg</td>
                 <td>@connectionEdis.SettingEdi</td>
                 <td>@connectionEdis.Remark</td>
-                <td>@connectionEdis.Name</td>
                 <td>@connectionEdis.Gateway</td>
                 <td>@connectionEdis.SSID</td>
                 <td>@connectionEdis.SFID</td>

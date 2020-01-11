@@ -19,29 +19,29 @@
                 <input for="MfgId" class="form-control" @bind="@connectionEdi.Name" />
             </div>
             <div class="form-group">
-                <label for="Connection Type" class="control-label">¨Typ spojení</label>
+                <label for="Connection Type" class="control-label">Typ spojení</label>
                 <ValidationMessage For="@(() => connectionEdi.ConnectionType)" />
                 <input for="MfgId" class="form-control" @bind="@connectionEdi.ConnectionType" />
             </div>
             <div class="form-group">
                 <label for="Calloff" class="control-label">Odvolavky</label>
                 <ValidationMessage For="@(() => connectionEdi.Calloff)" />
-                <input for="MfgId" class="form-control" @bind="@connectionEdi.Calloff" />
+                <input for="MfgId" type="checkbox" @bind="@connectionEdi.Calloff" />
             </div>
             <div class="form-group">
                 <label for="Asn" class="control-label">Dodaci listy</label>
                 <ValidationMessage For="@(() => connectionEdi.Asn)" />
-                <input for="MfgId" class="form-control" @bind="@connectionEdi.Asn" />
+                <input for="MfgId" type="checkbox" @bind="@connectionEdi.Asn" />
             </div>
             <div class="form-group">
                 <label for="SettingMFG" class="control-label">Nastavení v MFG</label>
                 <ValidationMessage For="@(() => connectionEdi.SettingMfg)" />
-                <input for="MfgId" class="form-control" @bind="@connectionEdi.SettingMfg" />
+                <input for="MfgId" type="checkbox" @bind="@connectionEdi.SettingMfg" />
             </div>
             <div class="form-group">
                 <label for="SettingEDI" class="control-label">Nastaveni EDI</label>
                 <ValidationMessage For="@(() => connectionEdi.SettingEdi)" />
-                <input for="MfgId" class="form-control" @bind="@connectionEdi.SettingEdi" />
+                <input for="MfgId" type="checkbox" @bind="@connectionEdi.SettingEdi" />
             </div>
             <div class="form-group">
                 <label for="Remark" class="control-label">Poznámka</label>
@@ -51,7 +51,7 @@
             <div class="form-group">
                 <label for="Gateway" class="control-label">Gateway</label>
                 <ValidationMessage For="@(() => connectionEdi.Gateway)" />
-                <input for="MfgId" class="form-control" @bind="@connectionEdi.Gateway" />
+                <input for="MfgId" type="checkbox" @bind="@connectionEdi.Gateway" />
             </div>
             <div class="form-group">
                 <label for="SSID" class="control-label">SSID</label>

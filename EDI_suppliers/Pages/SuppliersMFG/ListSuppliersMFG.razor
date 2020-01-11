@@ -24,26 +24,23 @@
                             <th>Jméno dodavatele</th>
                             <th>Kontakt IT</th>
                             <th>Kontakt Log</th>
-                            <th>EDI</th>
                             <th>EDI Partner</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var suppliermfg in supplierMFGs)
                         {
-                        <tr>
-                            <td>@suppliermfg.MfgId</td>
-                            <td>@suppliermfg.Name</td>
-                            <td>@suppliermfg.ContactIt</td>
-                            <td>@suppliermfg.ContactLog</td>
-                            <td>@suppliermfg.Edi</td>
-                            <td>@suppliermfg.ConnectionEdi</td>
-                            <td>
-                                <a href='/editsuppliermfg/@suppliermfg.Id'>Edit</a>
-                                <a href='/deletesuppliermfg/@suppliermfg.Id'>Delete</a>
-                            </td>
-                        </tr>
-
+                            <tr>
+                                <td>@suppliermfg.MfgId</td>
+                                <td>@suppliermfg.Name</td>
+                                <td>@suppliermfg.ContactIt</td>
+                                <td>@suppliermfg.ContactLog</td>
+                                <td>@suppliermfg.ConnectionEdi</td>
+                                <td>
+                                    <a href='/editsuppliermfg/@suppliermfg.Id'>Edit</a>
+                                    <a href='/deletesuppliermfg/@suppliermfg.Id'>Delete</a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
