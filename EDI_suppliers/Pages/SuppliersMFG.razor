@@ -55,36 +55,39 @@ else
         <MatDialogContent>
             <EditForm Model="@supplierMFG" OnValidSubmit="@Edit">
                 <DataAnnotationsValidator />
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
-                            <ValidationMessage For="@(() => supplierMFG.MfgId)" />
-                            <input for="MfgId" class="form-control" @bind="@supplierMFG.MfgId" />
-                        </div>
-                        <div class="form-group">
-                            <label for="Name" class="control-label">Jméno dodavatele</label>
-                            <ValidationMessage For="@(() => supplierMFG.Name)" />
-                            <input for="Name" class="form-control" @bind="@supplierMFG.Name" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ContactIt" class="control-label">Kontakt IT</label>
-                            <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
-                            <input for="ContactIt" class="form-control" @bind="@supplierMFG.ContactIt" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ContactLog" class="control-label">Kontakt Logistika</label>
-                            <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
-                            <input for="ContactLog" class="form-control" @bind="@supplierMFG.ContactLog" />
-                        </div>
-                    </div>
-                </div>
+                <p>
+                    <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplierMFG.MfgId" />
+                    <ValidationMessage For="@(() => supplierMFG.MfgId)" />
+                </p>
+                <p>
+                    <MatTextField Label="Jméno dodavatele" @bind-Value="@supplierMFG.Name" />
+                    <ValidationMessage For="@(() => supplierMFG.Name)" />
+                </p>
+                <p>
+                    <MatTextField Label="Kontakt IT" @bind-Value="@supplierMFG.ContactIt" />
+                    <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
+                </p>
+                <p>
+                    <MatTextField Label="Kontakt Logistika" @bind-Value="@supplierMFG.ContactLog" />
+                    <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
+                </p>
+                <p>
+                    <MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyberte EDI spojení" CustomStringSelector="@(i => i.Name)" Context="connectionEdiRow">
+                        <ItemTemplate>
+                            <div style="display: flex; flex-direction: row; width: 100%;">
+                                <div style="flex: 1;">@connectionEdiRow.Name</div>
+                            </div>
+                        </ItemTemplate>
+                    </MatAutocompleteList>
+                </p>
+                <MatButton Type="submit" Raised="true">Upravit</MatButton>
+                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
             </EditForm>
         </MatDialogContent>
-        <MatDialogActions>
+        @*<MatDialogActions>
             <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
             <MatButton OnClick="@Edit">Upravit</MatButton>
-        </MatDialogActions>
+        </MatDialogActions>*@
     </MatDialog>
 
     <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
@@ -92,36 +95,30 @@ else
         <MatDialogContent>
             <EditForm Model="@supplierMFG" OnValidSubmit="@Add">
                 <DataAnnotationsValidator />
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
-                            <ValidationMessage For="@(() => supplierMFG.MfgId)" />
-                            <input for="MfgId" class="form-control" @bind="@supplierMFG.MfgId" />
-                        </div>
-                        <div class="form-group">
-                            <label for="Name" class="control-label">Jméno dodavatele</label>
-                            <ValidationMessage For="@(() => supplierMFG.Name)" />
-                            <input for="Name" class="form-control" @bind="@supplierMFG.Name" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ContactIt" class="control-label">Kontakt IT</label>
-                            <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
-                            <input for="ContactIt" class="form-control" @bind="@supplierMFG.ContactIt" />
-                        </div>
-                        <div class="form-group">
-                            <label for="ContactLog" class="control-label">Kontakt Logistika</label>
-                            <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
-                            <input for="ContactLog" class="form-control" @bind="@supplierMFG.ContactLog" />
-                        </div>
-                    </div>
-                </div>
+                <p>
+                    <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplierMFG.MfgId" />
+                    <ValidationMessage For="@(() => supplierMFG.MfgId)" />
+                </p>
+                <p>
+                    <MatTextField Label="Jméno dodavatele" @bind-Value="@supplierMFG.Name" />
+                    <ValidationMessage For="@(() => supplierMFG.Name)" />
+                </p>
+                <p>
+                    <MatTextField Label="Kontakt IT" @bind-Value="@supplierMFG.ContactIt" />
+                    <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
+                </p>
+                <p>
+                    <MatTextField Label="Kontakt Logistika" @bind-Value="@supplierMFG.ContactLog" />
+                    <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
+                </p>
+                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
+                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
             </EditForm>
         </MatDialogContent>
-        <MatDialogActions>
+        @*<MatDialogActions>
             <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
             <MatButton OnClick="@Add">Vytvořit</MatButton>
-        </MatDialogActions>
+        </MatDialogActions>*@
     </MatDialog>
 
 
@@ -139,12 +136,16 @@ else
 
     SupplierMFG[] supplierMFGs;
     SupplierMFG supplierMFG { get; set; } = new SupplierMFG();
+
+    ConnectionEdi[] connectionEdis;    
+    ConnectionEdi connectionEdi { get; set; } = new ConnectionEdi();
     string baseUrl;
 
     protected override async Task OnInitializedAsync()
     {
         baseUrl = AppSettingsService.GetBaseUrl();
         supplierMFGs = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+        connectionEdis = await Http.GetJsonAsync<ConnectionEdi[]>(baseUrl + "/api/connectionedi/get");
     }
 
     public void OpenDeleteDialog(string supplierMFGId)
