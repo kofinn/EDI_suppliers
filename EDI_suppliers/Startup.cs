@@ -17,6 +17,7 @@ using EDI_suppliers.Areas.Identity;
 using EDI_suppliers.Data;
 using EDI_suppliers.Services;
 using Microsoft.OpenApi.Models;
+using System.Net.Http;
 
 namespace EDI_suppliers
 {
@@ -51,6 +52,8 @@ namespace EDI_suppliers
             {
                 option.DetailedErrors = true;
             });
+
+            services.AddSingleton<HttpClient>(); 
             services.AddSingleton<CustomHttpClient>();
             services.AddSignalR();
             services.AddSingleton<AppSettingsService>();

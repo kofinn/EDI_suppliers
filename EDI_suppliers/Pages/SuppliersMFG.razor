@@ -1,0 +1,190 @@
+﻿@using EDI_suppliers.Data
+
+@page "/suppliersmfg"
+
+@inject HttpClient Http
+@inject CustomHttpClient Http
+@inject AppSettingsService AppSettingsService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h2>Přehled MFG Dodavatelů</h2>
+
+@if (supplierMFGs == null)
+{
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+else
+{
+    <MatTable Items="@supplierMFGs" class="mat-elevation-z5" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false">
+        <MatTableHeader>
+            <th>Dodavatel MFG</th>
+            <th>Jméno dodavatele</th>
+            <th>Kontakt IT</th>
+            <th>Kontakt Log</th>
+            <th>EDI Partner</th>
+            <th>Akce</th>
+        </MatTableHeader>
+        <MatTableRow Context="supplierMFGRow">
+            <td>@supplierMFGRow.MfgId</td>
+            <td>@supplierMFGRow.Name</td>
+            <td>@supplierMFGRow.ContactIt</td>
+            <td>@supplierMFGRow.ContactLog</td>
+            <td>@supplierMFGRow.ConnectionEdi</td>
+            <td>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierMFGRow.Id))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierMFGRow.Id))"></MatIconButton>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+    <MatIconButton Icon="add" OnClick="@(() => OpenAddDialog())"></MatIconButton>
+
+    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+        <MatDialogContent>
+            Opravdu chcete vymazat dodavatele "@supplierMFG.MfgId" ?
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@Delete">Vymazat</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="edit"></MatIcon> Úprava záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@supplierMFG" OnValidSubmit="@Edit">
+                <DataAnnotationsValidator />
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
+                            <ValidationMessage For="@(() => supplierMFG.MfgId)" />
+                            <input for="MfgId" class="form-control" @bind="@supplierMFG.MfgId" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Name" class="control-label">Jméno dodavatele</label>
+                            <ValidationMessage For="@(() => supplierMFG.Name)" />
+                            <input for="Name" class="form-control" @bind="@supplierMFG.Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactIt" class="control-label">Kontakt IT</label>
+                            <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
+                            <input for="ContactIt" class="form-control" @bind="@supplierMFG.ContactIt" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactLog" class="control-label">Kontakt Logistika</label>
+                            <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
+                            <input for="ContactLog" class="form-control" @bind="@supplierMFG.ContactLog" />
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@Edit">Upravit</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@supplierMFG" OnValidSubmit="@Add">
+                <DataAnnotationsValidator />
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="MfgId" class="control-label">Dodavatelské číslo MFG</label>
+                            <ValidationMessage For="@(() => supplierMFG.MfgId)" />
+                            <input for="MfgId" class="form-control" @bind="@supplierMFG.MfgId" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Name" class="control-label">Jméno dodavatele</label>
+                            <ValidationMessage For="@(() => supplierMFG.Name)" />
+                            <input for="Name" class="form-control" @bind="@supplierMFG.Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactIt" class="control-label">Kontakt IT</label>
+                            <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
+                            <input for="ContactIt" class="form-control" @bind="@supplierMFG.ContactIt" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ContactLog" class="control-label">Kontakt Logistika</label>
+                            <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
+                            <input for="ContactLog" class="form-control" @bind="@supplierMFG.ContactLog" />
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@Add">Vytvořit</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+
+}
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    Boolean deleteDialogOpen = false;
+    Boolean editDialogOpen = false;
+    Boolean addDialogOpen = false;
+
+    SupplierMFG[] supplierMFGs;
+    SupplierMFG supplierMFG { get; set; } = new SupplierMFG();
+    string baseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        supplierMFGs = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+    }
+
+    public void OpenDeleteDialog(string supplierMFGId)
+    {
+        supplierMFG = supplierMFGs.Where(x => x.Id == supplierMFGId).FirstOrDefault();
+        this.deleteDialogOpen = true;        
+    }
+
+    public void OpenEditDialog(string supplierMFGId)
+    {
+        supplierMFG = supplierMFGs.Where(x => x.Id == supplierMFGId).FirstOrDefault();
+        this.editDialogOpen = true;
+    }
+
+    public void OpenAddDialog()
+    {
+        this.addDialogOpen = true;
+    }
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync(baseUrl + "/api/suppliermfg/delete/" + supplierMFG.Id);
+        deleteDialogOpen = false;
+        supplierMFG = new SupplierMFG();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Edit()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/suppliermfg/edit/" + supplierMFG.Id, supplierMFG);
+        editDialogOpen = false;
+        supplierMFG = new SupplierMFG();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Add()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        await Http.PostJsonAsync(baseUrl + "/api/suppliermfg/create", supplierMFG);
+        addDialogOpen = false;
+        await OnInitializedAsync();
+    }
+}
