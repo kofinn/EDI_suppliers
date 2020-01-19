@@ -9,7 +9,7 @@
 
 <h2>Přehled MFG Dodavatelů</h2>
 
-@if (supplierMFGs == null)
+@if (supplierMFGs == null || connectionEdis == null)
 {
     <MatProgressBar Indeterminate="true"></MatProgressBar>
 }
@@ -72,10 +72,11 @@ else
                     <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
                 </p>
                 <p>
-                    <MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyberte EDI spojení" CustomStringSelector="@(i => i.Name)" Context="connectionEdiRow">
+                    <MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@connectionEdi" Context="edi">
                         <ItemTemplate>
                             <div style="display: flex; flex-direction: row; width: 100%;">
-                                <div style="flex: 1;">@connectionEdiRow.Name</div>
+                                <div style="flex: 1;">@edi.Name</div>
+                                <div style="width: 150px;">@edi.SSID</div>
                             </div>
                         </ItemTemplate>
                     </MatAutocompleteList>
@@ -137,9 +138,11 @@ else
     SupplierMFG[] supplierMFGs;
     SupplierMFG supplierMFG { get; set; } = new SupplierMFG();
 
-    ConnectionEdi[] connectionEdis;    
-    ConnectionEdi connectionEdi { get; set; } = new ConnectionEdi();
+    ConnectionEdi[] connectionEdis;
+    ConnectionEdi connectionEdi = null;
+
     string baseUrl;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,7 +154,7 @@ else
     public void OpenDeleteDialog(string supplierMFGId)
     {
         supplierMFG = supplierMFGs.Where(x => x.Id == supplierMFGId).FirstOrDefault();
-        this.deleteDialogOpen = true;        
+        this.deleteDialogOpen = true;
     }
 
     public void OpenEditDialog(string supplierMFGId)
