@@ -1,0 +1,247 @@
+﻿@using EDI_suppliers.Data
+
+@page "/listconnectionedi"
+
+@inject HttpClient Http
+@inject CustomHttpClient Http
+@inject AppSettingsService AppSettingsService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h2>Přehled MFG Dodavatelů</h2>
+
+@if (supplierMFGs == null || connectionEdis == null)
+{
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+else
+{
+    <MatTable Items="@connectionEdis" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
+        <MatTableHeader>
+            <th>Jméno</th>
+            <th>Typ spojení</th>
+            <th>Odvolavky</th>
+            <th>Dodaci listy</th>
+            <th>Nastavení v MFG</th>
+            <th>Nastavení EDI</th>
+            <th>Poznámky</th>
+            <th>Gateway</th>
+            <th>SSID</th>
+            <th>SFID</th>
+            <th>Dodavatel MFG</th>
+            <th>Akce</th>
+        </MatTableHeader>
+        <MatTableRow Context="connectionEdiRow">
+            <td>@connectionEdiRow.Name</td>
+            <td>@connectionEdiRow.ConnectionType</td>
+            <td>@connectionEdiRow.Calloff</td>
+            <td>@connectionEdiRow.Asn</td>
+            <td>@connectionEdiRow.SettingMfg</td>
+            <td>@connectionEdiRow.SettingEdi</td>
+            <td>@connectionEdiRow.Remark</td>
+            <td>@connectionEdiRow.Gateway</td>
+            <td>@connectionEdiRow.SSID</td>
+            <td>@connectionEdiRow.SFID</td>
+            <td>@connectionEdiRow.SupplierMFG</td>
+            <td>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(connectionEdiRow.Id))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(connectionEdiRow.Id))"></MatIconButton>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+    <MatIconButton Icon="add" OnClick="@(() => OpenAddDialog())"></MatIconButton>
+
+    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Confirm Delete</MatDialogTitle>
+        <MatDialogContent>
+            Opravdu chcete vymazat dodavatele "@connectionEdi.Name" ?
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@Delete">Vymazat</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="edit"></MatIcon> Úprava záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@connectionEdi" OnValidSubmit="@Edit">
+                <DataAnnotationsValidator />
+                <p>
+                    <MatTextField Label="Jméno" @bind-Value="@connectionEdi.Name" />
+                    <ValidationMessage For="@(() => connectionEdi.Name)" />
+                </p>
+                <p>
+                    <MatSelect Label="Typ spojení" @bind-Value="@connectionEdi.ConnectionType">
+                        <MatOptionString></MatOptionString>
+                        <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
+                        <MatOptionString Value="WebEDI">WebEDI</MatOptionString>
+                    </MatSelect>
+                    <ValidationMessage For="@(() => connectionEdi.ConnectionType)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Calloff" Label="Odvolavky"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Asn" Label="Dodaci list"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.SettingEdi" Label="Nastaveni EDI"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.SettingMfg" Label="Nastavení MFG"></MatCheckbox>
+                </p>
+                <p>
+                    <MatTextField Label="Poznámka" @bind-Value="@connectionEdi.Remark" />
+                    <ValidationMessage For="@(() => connectionEdi.Remark)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Gateway" Label="Gateway"></MatCheckbox>
+                    <ValidationMessage For="@(() => connectionEdi.Gateway)" />
+                </p>
+                <p>
+                    <MatTextField Label="SSID" @bind-Value="@connectionEdi.SSID" />
+                    <ValidationMessage For="@(() => connectionEdi.SSID)" />
+                </p>
+                <p>
+                    <MatTextField Label="SFID" @bind-Value="@connectionEdi.SFID" />
+                    <ValidationMessage For="@(() => connectionEdi.SFID)" />
+                </p>
+                <MatButton Type="submit" Raised="true">Upravit</MatButton>
+                <MatButton OnClick="@(async e => { editDialogOpen = false; await OnInitializedAsync();})">Zpět</MatButton>
+            </EditForm>
+        </MatDialogContent>
+        @*<MatDialogActions>
+                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Edit">Upravit</MatButton>
+            </MatDialogActions>*@
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@connectionEdi" OnValidSubmit="@Add">
+                <DataAnnotationsValidator />
+                <p>
+                    <MatTextField Label="Jméno" @bind-Value="@connectionEdi.Name" />
+                    <ValidationMessage For="@(() => connectionEdi.Name)" />
+                </p>
+                <p>
+                    <MatSelect Label="Typ spojení" @bind-Value="@connectionEdi.ConnectionType">
+                        <MatOptionString></MatOptionString>
+                        <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
+                        <MatOptionString Value="WebEDI">WebEDI</MatOptionString>
+                    </MatSelect>
+                    <ValidationMessage For="@(() => connectionEdi.ConnectionType)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Calloff" Label="Odvolavky"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Asn" Label="Dodaci list"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.SettingEdi" Label="Nastaveni EDI"></MatCheckbox>
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.SettingMfg" Label="Nastavení MFG"></MatCheckbox>
+                </p>
+                <p>
+                    <MatTextField Label="Poznámka" @bind-Value="@connectionEdi.Remark" />
+                    <ValidationMessage For="@(() => connectionEdi.Remark)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@connectionEdi.Gateway" Label="Gateway"></MatCheckbox>
+                    <ValidationMessage For="@(() => connectionEdi.Gateway)" />
+                </p>
+                <p>
+                    <MatTextField Label="SSID" @bind-Value="@connectionEdi.SSID" />
+                    <ValidationMessage For="@(() => connectionEdi.SSID)" />
+                </p>
+                <p>
+                    <MatTextField Label="SFID" @bind-Value="@connectionEdi.SFID" />
+                    <ValidationMessage For="@(() => connectionEdi.SFID)" />
+                </p>
+                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
+                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
+            </EditForm>
+        </MatDialogContent>
+        @*<MatDialogActions>
+                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Add">Vytvořit</MatButton>
+            </MatDialogActions>*@
+    </MatDialog>
+
+
+}
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    Boolean deleteDialogOpen = false;
+    Boolean editDialogOpen = false;
+    Boolean addDialogOpen = false;
+
+    SupplierMFG[] supplierMFGs;
+    SupplierMFG supplierMFG = null;
+
+    ConnectionEdi[] connectionEdis;
+    ConnectionEdi connectionEdi { get; set; } = new ConnectionEdi();
+
+    string baseUrl;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        supplierMFGs = await Http.GetJsonAsync<SupplierMFG[]>(baseUrl + "/api/suppliermfg/get");
+        connectionEdis = await Http.GetJsonAsync<ConnectionEdi[]>(baseUrl + "/api/connectionedi/get");
+    }
+
+    public void OpenDeleteDialog(string connectionEdiId)
+    {
+        connectionEdi = connectionEdis.Where(x => x.Id == connectionEdiId).FirstOrDefault();
+        this.deleteDialogOpen = true;
+    }
+
+    public void OpenEditDialog(string connectionEdiId)
+    {
+        connectionEdi = connectionEdis.Where(x => x.Id == connectionEdiId).FirstOrDefault();
+        this.editDialogOpen = true;
+    }
+
+    public void OpenAddDialog()
+    {
+        this.addDialogOpen = true;
+    }
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync(baseUrl + "/api/connectionedi/delete/" + connectionEdi.Id);
+        deleteDialogOpen = false;
+        connectionEdi = new ConnectionEdi();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Edit()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/connectionedi/edit/" + connectionEdi.Id, connectionEdi);
+        editDialogOpen = false;
+        connectionEdi = new ConnectionEdi();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Add()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        await Http.PostJsonAsync(baseUrl + "/api/connectionedi/create", connectionEdi);
+        addDialogOpen = false;
+        connectionEdi = new ConnectionEdi();
+        await OnInitializedAsync();
+    }
+}

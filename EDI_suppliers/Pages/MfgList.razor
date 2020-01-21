@@ -29,7 +29,7 @@ else
             <td>@supplierMFGRow.Name</td>
             <td>@supplierMFGRow.ContactIt</td>
             <td>@supplierMFGRow.ContactLog</td>
-            <td>@supplierMFGRow.ConnectionEdi.Name</td>
+            <td>@supplierMFGRow.ConnectionEdi</td>
             <td>
                 <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierMFGRow.Id))"></MatIconButton>
                 <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierMFGRow.Id))"></MatIconButton>
@@ -72,27 +72,27 @@ else
                     <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
                 </p>
                 @*<p>
-                    <MatTextField Label="EDI spojení" @bind-Value="@supplierMFG.ConnectionEdi.Name" />
-                    <ValidationMessage For="@(() => supplierMFG.ConnectionEdi.Name)" />
-                </p>*@
+                        <MatTextField Label="EDI spojení" @bind-Value="@supplierMFG.ConnectionEdi.Name" />
+                        <ValidationMessage For="@(() => supplierMFG.ConnectionEdi.Name)" />
+                    </p>*@
                 <p>
                     @*<MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@connectionEdi" Context="edi">
-                <ItemTemplate>
-                    <div style="display: flex; flex-direction: row; width: 100%;">
-                        <div style="flex: 1;">@edi.Name</div>
-                        <div style="width: 150px;">@edi.SSID</div>
-                    </div>
-                </ItemTemplate>
-            </MatAutocompleteList>*@
+                            <ItemTemplate>
+                                <div style="display: flex; flex-direction: row; width: 100%;">
+                                    <div style="flex: 1;">@edi.Name</div>
+                                    <div style="width: 150px;">@edi.SSID</div>
+                                </div>
+                            </ItemTemplate>
+                        </MatAutocompleteList>*@
                 </p>
                 <MatButton Type="submit" Raised="true">Upravit</MatButton>
-                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@(async e => { editDialogOpen = false; await OnInitializedAsync();})">Zpět</MatButton>
             </EditForm>
         </MatDialogContent>
         @*<MatDialogActions>
-            <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
-            <MatButton OnClick="@Edit">Upravit</MatButton>
-        </MatDialogActions>*@
+                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Edit">Upravit</MatButton>
+            </MatDialogActions>*@
     </MatDialog>
 
     <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
@@ -117,13 +117,13 @@ else
                     <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
                 </p>
                 <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
-                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
             </EditForm>
         </MatDialogContent>
         @*<MatDialogActions>
-            <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
-            <MatButton OnClick="@Add">Vytvořit</MatButton>
-        </MatDialogActions>*@
+                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Add">Vytvořit</MatButton>
+            </MatDialogActions>*@
     </MatDialog>
 
 
