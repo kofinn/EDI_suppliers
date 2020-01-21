@@ -15,7 +15,7 @@
 }
 else
 {
-    <MatTable Items="@supplierMFGs" class="mat-elevation-z5" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false">
+    <MatTable Items="@supplierMFGs" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
         <MatTableHeader>
             <th>Dodavatel MFG</th>
             <th>Jméno dodavatele</th>
@@ -29,7 +29,7 @@ else
             <td>@supplierMFGRow.Name</td>
             <td>@supplierMFGRow.ContactIt</td>
             <td>@supplierMFGRow.ContactLog</td>
-            <td>@supplierMFGRow.ConnectionEdi</td>
+            <td>@supplierMFGRow.ConnectionEdi.Name</td>
             <td>
                 <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierMFGRow.Id))"></MatIconButton>
                 <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierMFGRow.Id))"></MatIconButton>
@@ -71,15 +71,19 @@ else
                     <MatTextField Label="Kontakt Logistika" @bind-Value="@supplierMFG.ContactLog" />
                     <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
                 </p>
+                @*<p>
+                    <MatTextField Label="EDI spojení" @bind-Value="@supplierMFG.ConnectionEdi.Name" />
+                    <ValidationMessage For="@(() => supplierMFG.ConnectionEdi.Name)" />
+                </p>*@
                 <p>
-                    <MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@connectionEdi" Context="edi">
-                        <ItemTemplate>
-                            <div style="display: flex; flex-direction: row; width: 100%;">
-                                <div style="flex: 1;">@edi.Name</div>
-                                <div style="width: 150px;">@edi.SSID</div>
-                            </div>
-                        </ItemTemplate>
-                    </MatAutocompleteList>
+                    @*<MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@connectionEdi" Context="edi">
+                <ItemTemplate>
+                    <div style="display: flex; flex-direction: row; width: 100%;">
+                        <div style="flex: 1;">@edi.Name</div>
+                        <div style="width: 150px;">@edi.SSID</div>
+                    </div>
+                </ItemTemplate>
+            </MatAutocompleteList>*@
                 </p>
                 <MatButton Type="submit" Raised="true">Upravit</MatButton>
                 <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
@@ -189,6 +193,7 @@ else
         baseUrl = AppSettingsService.GetBaseUrl();
         await Http.PostJsonAsync(baseUrl + "/api/suppliermfg/create", supplierMFG);
         addDialogOpen = false;
+        supplierMFG = new SupplierMFG();
         await OnInitializedAsync();
     }
 }
