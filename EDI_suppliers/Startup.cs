@@ -53,13 +53,9 @@ namespace EDI_suppliers
                 option.DetailedErrors = true;
             });
 
-            services.AddTransient<ISupplierService, ISupplierService>();
-            services.AddTransient<IPartnerService, IPartnerService>();
-            services.AddTransient<IConnectionService, IConnectionService>();
+
             services.AddSingleton<HttpClient>(); 
-            services.AddSingleton<CustomHttpClient>();
             services.AddSignalR();
-            services.AddSingleton<AppSettingsService>();
 
             //Login security settings
             services.Configure<IdentityOptions>(options =>
@@ -79,6 +75,9 @@ namespace EDI_suppliers
             });
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+            services.AddTransient<ISupplierService, ISupplierService>();
+            services.AddTransient<IPartnerService, IPartnerService>();
+            services.AddTransient<IConnectionService, IConnectionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

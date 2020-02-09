@@ -3,8 +3,6 @@
 @page "/supplierlist"
 
 @inject HttpClient Http
-@inject CustomHttpClient Http
-@inject AppSettingsService AppSettingsService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h2>Přehled MFG Dodavatelů</h2>
@@ -145,8 +143,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        baseUrl = AppSettingsService.GetBaseUrl();
-        suppliers = await Http.GetJsonAsync<Supplier[]>(baseUrl + "/api/supplier/get");
     }
 
     public void OpenDeleteDialog(string supplierId)
@@ -168,26 +164,13 @@ else
 
     protected async Task Delete()
     {
-        await Http.DeleteAsync(baseUrl + "/api/supplier/delete/" + supplier.Id);
-        deleteDialogOpen = false;
-        supplier = new Supplier();
-        await OnInitializedAsync();
     }
 
     protected async Task Edit()
     {
-        await Http.PutJsonAsync(baseUrl + "/api/supplier/edit/" + supplier.Id, supplier);
-        editDialogOpen = false;
-        supplier = new Supplier();
-        await OnInitializedAsync();
     }
 
     protected async Task Add()
     {
-        baseUrl = AppSettingsService.GetBaseUrl();
-        await Http.PostJsonAsync(baseUrl + "/api/supplier/create", supplier);
-        addDialogOpen = false;
-        supplier = new Supplier();
-        await OnInitializedAsync();
     }
 }

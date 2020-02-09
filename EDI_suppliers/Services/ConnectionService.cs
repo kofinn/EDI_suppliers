@@ -24,16 +24,16 @@ namespace EDI_suppliers.Services
         }
         public async Task<List<Connection>> Get()
         {
-            return await _context.Connection.ToListAsync();
+            return await _context.Connections.ToListAsync();
         }
         public async Task<Connection> Get(int id)
         {
-            var connection = await _context.Connection.FindAsync(id);
+            var connection = await _context.Connections.FindAsync(id);
             return connection;
         }
         public async Task<Connection> Add(Connection connection)
         {
-            _context.Connection.Add(connection);
+            _context.Connections.Add(connection);
             await _context.SaveChangesAsync();
             return connection;
         }
@@ -45,8 +45,8 @@ namespace EDI_suppliers.Services
         }
         public async Task<Connection> Delete(int id)
         {
-            var connection = await _context.Connection.FindAsync(id);
-            _context.Connection.Remove(connection);
+            var connection = await _context.Connections.FindAsync(id);
+            _context.Connections.Remove(connection);
             await _context.SaveChangesAsync();
             return connection;
         }

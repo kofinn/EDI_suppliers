@@ -24,16 +24,16 @@ namespace EDI_suppliers.Services
         }
         public async Task<List<Partner>> Get()
         {
-            return await _context.Partner.ToListAsync();
+            return await _context.Partners.ToListAsync();
         }
         public async Task<Partner> Get(int id)
         {
-            var partner = await _context.Partner.FindAsync(id);
+            var partner = await _context.Partners.FindAsync(id);
             return partner;
         }
         public async Task<Partner> Add(Partner partner)
         {
-            _context.Partner.Add(partner);
+            _context.Partners.Add(partner);
             await _context.SaveChangesAsync();
             return partner;
         }
@@ -45,8 +45,8 @@ namespace EDI_suppliers.Services
         }
         public async Task<Partner> Delete(int id)
         {
-            var partner = await _context.Partner.FindAsync(id);
-            _context.Partner.Remove(partner);
+            var partner = await _context.Partners.FindAsync(id);
+            _context.Partners.Remove(partner);
             await _context.SaveChangesAsync();
             return partner;
         }

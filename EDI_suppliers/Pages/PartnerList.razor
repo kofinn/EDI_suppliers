@@ -3,8 +3,6 @@
 @page "/partnerlist"
 
 @inject HttpClient Http
-@inject CustomHttpClient Http
-@inject AppSettingsService AppSettingsService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h2>Přehled EDI partnerů</h2>
@@ -161,8 +159,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        baseUrl = AppSettingsService.GetBaseUrl();
-        partners = await Http.GetJsonAsync<Partner[]>(baseUrl + "/api/partner/get");
+
     }
 
     public void OpenDeleteDialog(string partnerId)
@@ -184,26 +181,16 @@ else
 
     protected async Task Delete()
     {
-        await Http.DeleteAsync(baseUrl + "/api/partner/delete/" + partner.Id);
-        deleteDialogOpen = false;
-        partner = new Partner();
-        await OnInitializedAsync();
+
     }
 
     protected async Task Edit()
     {
-        await Http.PutJsonAsync(baseUrl + "/api/partner/edit/" + partner.Id, partner);
-        editDialogOpen = false;
-        partner = new Partner();
-        await OnInitializedAsync();
+
     }
 
     protected async Task Add()
     {
-        baseUrl = AppSettingsService.GetBaseUrl();
-        await Http.PostJsonAsync(baseUrl + "/api/partner/create", partner);
-        addDialogOpen = false;
-        partner = new Partner();
-        await OnInitializedAsync();
+
     }
 }

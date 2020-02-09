@@ -12,10 +12,9 @@ namespace EDI_suppliers.Data
             : base(options)
         {
         }
-
-        public DbSet<Supplier> Supplier { get; set; }
-        public DbSet<Partner> Partner { get; set; }
-        public DbSet<Connection> Connection { get; set; }
+        public DbSet<Partner> Partners { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Connection> Connections { get; set; }
 
         public override int SaveChanges()
         {

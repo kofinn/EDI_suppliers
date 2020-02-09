@@ -3,9 +3,7 @@
 @page "/testovani2"
 
 @inject HttpClient Http
-@inject CustomHttpClient Http
 @inject NavigationManager NavigationManager
-@inject AppSettingsService AppSettingsService
 
 @if (suppliers == null)
 {
@@ -80,17 +78,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        baseUrl = AppSettingsService.GetBaseUrl();
-        partners = await Http.GetJsonAsync<Partner[]>(baseUrl + "/api/partner/get");
-        suppliers = await Http.GetJsonAsync<Supplier[]>(baseUrl + "/api/supplier/get");
-
     }
 
     protected async Task Edit()
     {
-        await Http.PutJsonAsync(baseUrl + "/api/supplier/edit/" + supplierMFG.Id, supplierMFG);
-        supplierMFG = new Supplier();
-        await OnInitializedAsync();
     }
 }
 
