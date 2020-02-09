@@ -53,6 +53,9 @@ namespace EDI_suppliers
                 option.DetailedErrors = true;
             });
 
+            services.AddTransient<ISupplierService, ISupplierService>();
+            services.AddTransient<IPartnerService, IPartnerService>();
+            services.AddTransient<IConnectionService, IConnectionService>();
             services.AddSingleton<HttpClient>(); 
             services.AddSingleton<CustomHttpClient>();
             services.AddSignalR();
