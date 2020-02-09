@@ -4,14 +4,16 @@ using EDI_suppliers.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EDI_suppliers.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200209191157_initial2")]
+    partial class initial2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,7 +319,7 @@ namespace EDI_suppliers.Migrations
                         .HasForeignKey("PartnerId");
 
                     b.HasOne("EDI_suppliers.Data.Supplier", "Supplier")
-                        .WithMany("Connections")
+                        .WithMany()
                         .HasForeignKey("SupplierId");
                 });
 

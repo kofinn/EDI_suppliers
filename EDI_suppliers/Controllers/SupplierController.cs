@@ -12,30 +12,30 @@ namespace EDI_suppliers.Controllers
         [Route("api/[controller]")]
         //[Authorize]
         [ApiController]
-        public class SupplierMFGController : ControllerBase
+        public class SupplierController : ControllerBase
         {
             private readonly ApplicationDbContext _dbContext;
 
-            public SupplierMFGController(ApplicationDbContext dbContext)
+            public SupplierController(ApplicationDbContext dbContext)
             {
                 _dbContext = dbContext;
             }
 
             [HttpGet]
             [Route("Get")]
-            public async Task<List<SupplierMFG>> Get()
+            public async Task<List<Supplier>> Get()
             {
-                return await _dbContext.SupplierMFG.ToListAsync();
+                return await _dbContext.Supplier.ToListAsync();
             }
 
             [HttpPost]
             [Route("Create")]
-            public async Task<bool> Create([FromBody]SupplierMFG suppliermfg)
+            public async Task<bool> Create([FromBody]Supplier supplier)
             {
                 if (ModelState.IsValid)
                 {
-                    suppliermfg.Id = Guid.NewGuid().ToString();
-                    _dbContext.Add(suppliermfg);
+                    supplier.Id = Guid.NewGuid().ToString();
+                    _dbContext.Add(supplier);
                     try
                     {
                         await _dbContext.SaveChangesAsync();
@@ -54,21 +54,21 @@ namespace EDI_suppliers.Controllers
 
             [HttpGet]
             [Route("Details/{id}")]
-            public async Task<SupplierMFG> Details(string id)
+            public async Task<Supplier> Details(string id)
             {
-                return await _dbContext.SupplierMFG.FindAsync(id);
+                return await _dbContext.Supplier.FindAsync(id);
             }
 
             [HttpPut]
             [Route("Edit/{id}")]
-            public async Task<bool> Edit(string id, [FromBody]SupplierMFG suppliermfg)
+            public async Task<bool> Edit(string id, [FromBody]Supplier supplier)
             {
-                if (id != suppliermfg.Id)
+                if (id != supplier.Id)
                 {
                     return false;
                 }
 
-                _dbContext.Entry(suppliermfg).State = EntityState.Modified;
+                _dbContext.Entry(supplier).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -77,13 +77,13 @@ namespace EDI_suppliers.Controllers
             [Route("Delete/{id}")]
             public async Task<bool> DeleteConfirmed(string id)
             {
-                var suppliermfg = await _dbContext.SupplierMFG.FindAsync(id);
+                var suppliermfg = await _dbContext.Supplier.FindAsync(id);
                 if (suppliermfg == null)
                 {
                     return false;
                 }
 
-                _dbContext.SupplierMFG.Remove(suppliermfg);
+                _dbContext.Supplier.Remove(suppliermfg);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }

@@ -10,18 +10,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDI_suppliers.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200110222546_Initial")]
+    [Migration("20200209182056_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EDI_suppliers.Data.ConnectionEdi", b =>
+            modelBuilder.Entity("EDI_suppliers.Data.Connection", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -32,9 +32,37 @@ namespace EDI_suppliers.Migrations
                     b.Property<bool>("Calloff")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ConnectionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("PartnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("SettingEdi")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SettingMfg")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SupplierId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Connection");
+                });
+
+            modelBuilder.Entity("EDI_suppliers.Data.Partner", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("EdiType")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Gateway")
                         .HasColumnType("bit");
@@ -51,23 +79,14 @@ namespace EDI_suppliers.Migrations
                     b.Property<string>("SSID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("SettingEdi")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("SettingMfg")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
-                    b.ToTable("ConnectionEdi");
+                    b.ToTable("Partner");
                 });
 
-            modelBuilder.Entity("EDI_suppliers.Data.SupplierMFG", b =>
+            modelBuilder.Entity("EDI_suppliers.Data.Supplier", b =>
                 {
-                    b.Property<string>("SupplierId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConnectionEdiId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ContactIt")
@@ -75,9 +94,6 @@ namespace EDI_suppliers.Migrations
 
                     b.Property<string>("ContactLog")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Edi")
-                        .HasColumnType("bit");
 
                     b.Property<string>("MfgId")
                         .IsRequired()
@@ -87,11 +103,12 @@ namespace EDI_suppliers.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SupplierId");
+                    b.Property<int>("Plant")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ConnectionEdiId");
+                    b.HasKey("Id");
 
-                    b.ToTable("SupplierMFG");
+                    b.ToTable("Supplier");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -294,11 +311,15 @@ namespace EDI_suppliers.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("EDI_suppliers.Data.SupplierMFG", b =>
+            modelBuilder.Entity("EDI_suppliers.Data.Connection", b =>
                 {
-                    b.HasOne("EDI_suppliers.Data.ConnectionEdi", "ConnectionEdi")
-                        .WithMany("SupplierMFG")
-                        .HasForeignKey("ConnectionEdiId");
+                    b.HasOne("EDI_suppliers.Data.Partner", "Partner")
+                        .WithMany("Connections")
+                        .HasForeignKey("PartnerId");
+
+                    b.HasOne("EDI_suppliers.Data.Supplier", "Supplier")
+                        .WithMany("Connections")
+                        .HasForeignKey("SupplierId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

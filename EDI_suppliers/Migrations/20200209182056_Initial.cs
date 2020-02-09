@@ -47,24 +47,36 @@ namespace EDI_suppliers.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConnectionEdi",
+                name: "Partner",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    ConnectionType = table.Column<string>(nullable: false),
-                    Calloff = table.Column<bool>(nullable: false),
-                    Asn = table.Column<bool>(nullable: false),
-                    SettingMfg = table.Column<bool>(nullable: false),
-                    SettingEdi = table.Column<bool>(nullable: false),
-                    Remark = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
+                    EdiType = table.Column<int>(nullable: false),
                     Gateway = table.Column<bool>(nullable: false),
                     SSID = table.Column<string>(nullable: true),
-                    SFID = table.Column<string>(nullable: true)
+                    SFID = table.Column<string>(nullable: true),
+                    Remark = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConnectionEdi", x => x.Id);
+                    table.PrimaryKey("PK_Partner", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Supplier",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Plant = table.Column<int>(nullable: false),
+                    MfgId = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    ContactIt = table.Column<string>(nullable: true),
+                    ContactLog = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Supplier", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -174,24 +186,31 @@ namespace EDI_suppliers.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SupplierMFG",
+                name: "Connection",
                 columns: table => new
                 {
-                    SupplierId = table.Column<string>(nullable: false),
-                    MfgId = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    ContactIt = table.Column<string>(nullable: true),
-                    ContactLog = table.Column<string>(nullable: true),
-                    Edi = table.Column<bool>(nullable: false),
-                    ConnectionEdiId = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    Calloff = table.Column<bool>(nullable: false),
+                    Asn = table.Column<bool>(nullable: false),
+                    SettingMfg = table.Column<bool>(nullable: false),
+                    SettingEdi = table.Column<bool>(nullable: false),
+                    SupplierId = table.Column<string>(nullable: true),
+                    PartnerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SupplierMFG", x => x.SupplierId);
+                    table.PrimaryKey("PK_Connection", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SupplierMFG_ConnectionEdi_ConnectionEdiId",
-                        column: x => x.ConnectionEdiId,
-                        principalTable: "ConnectionEdi",
+                        name: "FK_Connection_Partner_PartnerId",
+                        column: x => x.PartnerId,
+                        principalTable: "Partner",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Connection_Supplier_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Supplier",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -236,9 +255,14 @@ namespace EDI_suppliers.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SupplierMFG_ConnectionEdiId",
-                table: "SupplierMFG",
-                column: "ConnectionEdiId");
+                name: "IX_Connection_PartnerId",
+                table: "Connection",
+                column: "PartnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Connection_SupplierId",
+                table: "Connection",
+                column: "SupplierId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -259,7 +283,7 @@ namespace EDI_suppliers.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "SupplierMFG");
+                name: "Connection");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -268,7 +292,10 @@ namespace EDI_suppliers.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ConnectionEdi");
+                name: "Partner");
+
+            migrationBuilder.DropTable(
+                name: "Supplier");
         }
     }
 }

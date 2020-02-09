@@ -13,30 +13,30 @@ namespace EDI_suppliers.Controllers
     [Route("api/[controller]")]
     //[Authorize]
     [ApiController]
-    public class ConnectionEdiController : ControllerBase
+    public class ConnectionController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public ConnectionEdiController(ApplicationDbContext dbContext)
+        public ConnectionController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         [HttpGet]
         [Route("Get")]
-        public async Task<List<ConnectionEdi>> Get()
+        public async Task<List<Connection>> Get()
         {
-            return await _dbContext.ConnectionEdi.ToListAsync();
+            return await _dbContext.Connection.ToListAsync();
         }
 
         [HttpPost]
         [Route("Create")]
-        public async Task<bool> Create([FromBody]ConnectionEdi ConnectionEdi)
+        public async Task<bool> Create([FromBody]Connection connection)
         {
             if (ModelState.IsValid)
             {
-                ConnectionEdi.Id = Guid.NewGuid().ToString();
-                _dbContext.Add(ConnectionEdi);
+                connection.Id = Guid.NewGuid().ToString();
+                _dbContext.Add(connection);
                 try
                 {
                     await _dbContext.SaveChangesAsync();
@@ -55,21 +55,21 @@ namespace EDI_suppliers.Controllers
 
         [HttpGet]
         [Route("Details/{id}")]
-        public async Task<ConnectionEdi> Details(string id)
+        public async Task<Connection> Details(string id)
         {
-            return await _dbContext.ConnectionEdi.FindAsync(id);
+            return await _dbContext.Connection.FindAsync(id);
         }
 
         [HttpPut]
         [Route("Edit/{id}")]
-        public async Task<bool> Edit(string id, [FromBody]ConnectionEdi ConnectionEdi)
+        public async Task<bool> Edit(string id, [FromBody]Connection connection)
         {
-            if (id != ConnectionEdi.Id)
+            if (id != connection.Id)
             {
                 return false;
             }
 
-            _dbContext.Entry(ConnectionEdi).State = EntityState.Modified;
+            _dbContext.Entry(connection).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -78,16 +78,15 @@ namespace EDI_suppliers.Controllers
         [Route("Delete/{id}")]
         public async Task<bool> DeleteConfirmed(string id)
         {
-            var ConnectionEdi = await _dbContext.ConnectionEdi.FindAsync(id);
+            var ConnectionEdi = await _dbContext.Connection.FindAsync(id);
             if (ConnectionEdi == null)
             {
                 return false;
             }
 
-            _dbContext.ConnectionEdi.Remove(ConnectionEdi);
+            _dbContext.Connection.Remove(ConnectionEdi);
             await _dbContext.SaveChangesAsync();
             return true;
         }
     }
-
 }

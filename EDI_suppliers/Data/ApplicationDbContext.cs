@@ -13,7 +13,8 @@ namespace EDI_suppliers.Data
         {
         }
 
-        public DbSet<SupplierMFG> SupplierMFG { get; set; }
-        public DbSet<ConnectionEdi> ConnectionEdi { get; set; }
+        public DbSet<Supplier> Supplier { get; set; }
+        public DbSet<Partner> Partner { get; set; }
+        public DbSet<Connection> Connection { get; set; }
     }
 }

@@ -7,14 +7,22 @@
 @inject NavigationManager NavigationManager
 @inject AppSettingsService AppSettingsService
 
-@if (connectionEdis == null)
+@if (suppliers == null)
 {
     <h1>nacitani</h1>
 }
 else
 {
     <p>
-        <MatAutocompleteList Items="@connectionEdis" TItem="ConnectionEdi" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@connectionEdi">
+        <MatAutocompleteList Items="@partners" TItem="Partner" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@partner">
+            <ItemTemplate>
+                <div style="display: flex; flex-direction: row; width: 100%;">
+                    <div style="flex: 1;">@context.Name</div>
+                </div>
+            </ItemTemplate>
+        </MatAutocompleteList>
+
+        <MatAutocompleteList Items="@suppliers" TItem="Supplier" Label="Vyber dodavatele MFG" CustomStringSelector="@(i => i.Name)" @bind-Value="@supplierMFG">
             <ItemTemplate>
                 <div style="display: flex; flex-direction: row; width: 100%;">
                     <div style="flex: 1;">@context.Name</div>
@@ -22,20 +30,67 @@ else
             </ItemTemplate>
         </MatAutocompleteList>
     </p>
-}
 
+
+    <EditForm Model="@supplierMFG" OnValidSubmit="@Edit">
+        <DataAnnotationsValidator />
+        <p>
+            <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplierMFG.MfgId" />
+            <ValidationMessage For="@(() => supplierMFG.MfgId)" />
+        </p>
+        <p>
+            <MatTextField Label="Jméno dodavatele" @bind-Value="@supplierMFG.Name" />
+            <ValidationMessage For="@(() => supplierMFG.Name)" />
+        </p>
+        <p>
+            <MatTextField Label="Kontakt IT" @bind-Value="@supplierMFG.ContactIt" />
+            <ValidationMessage For="@(() => supplierMFG.ContactIt)" />
+        </p>
+        <p>
+            <MatTextField Label="Kontakt Logistika" @bind-Value="@supplierMFG.ContactLog" />
+            <ValidationMessage For="@(() => supplierMFG.ContactLog)" />
+        </p>
+        @*<p>
+                <MatTextField Label="EDI spojení" @bind-Value="@supplierMFG.Partner.Name" />
+                <ValidationMessage For="@(() => supplierMFG.Partner.Name)" />
+            </p>*@
+        <p>
+            @*<MatAutocompleteList Items="@partners" TItem="Partner" Label="Vyber EDI" CustomStringSelector="@(i => i.Name)" @bind-Value="@partner" Context="edi">
+                    <ItemTemplate>
+                        <div style="display: flex; flex-direction: row; width: 100%;">
+                            <div style="flex: 1;">@edi.Name</div>
+                            <div style="width: 150px;">@edi.SSID</div>
+                        </div>
+                    </ItemTemplate>
+                </MatAutocompleteList>*@
+        </p>
+        <MatButton Type="submit" Raised="true">Upravit</MatButton>
+    </EditForm>
+}
 
 @code
 {
-    ConnectionEdi[] connectionEdis;
-    ConnectionEdi connectionEdi = null;
+    Partner[] partners;
+    Partner partner = null;
+
+    Supplier[] suppliers;
+    Supplier supplierMFG = null;
 
     string baseUrl;
 
     protected override async Task OnInitializedAsync()
     {
         baseUrl = AppSettingsService.GetBaseUrl();
-        connectionEdis = await Http.GetJsonAsync<ConnectionEdi[]>(baseUrl + "/api/connectionedi/get");
+        partners = await Http.GetJsonAsync<Partner[]>(baseUrl + "/api/partner/get");
+        suppliers = await Http.GetJsonAsync<Supplier[]>(baseUrl + "/api/supplier/get");
+
+    }
+
+    protected async Task Edit()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/supplier/edit/" + supplierMFG.Id, supplierMFG);
+        supplierMFG = new Supplier();
+        await OnInitializedAsync();
     }
 }
 

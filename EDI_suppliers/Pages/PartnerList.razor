@@ -1,0 +1,209 @@
+﻿@using EDI_suppliers.Data
+
+@page "/partnerlist"
+
+@inject HttpClient Http
+@inject CustomHttpClient Http
+@inject AppSettingsService AppSettingsService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h2>Přehled EDI partnerů</h2>
+
+@if (partners == null)
+{
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+else
+{
+    <MatTable Items="@partners" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
+        <MatTableHeader>
+            <th>Jméno</th>
+            <th>Typ spojení</th>
+            <th>Gateway</th>
+            <th>SSID</th>
+            <th>SFID</th>
+            <th>Poznámky</th>
+            <th>Akce</th>
+        </MatTableHeader>
+        <MatTableRow Context="partnerRow">
+            <td>@partnerRow.Name</td>
+            <td>@partnerRow.EdiType</td>
+            <td>@partnerRow.Gateway</td>
+            <td>@partnerRow.SSID</td>
+            <td>@partnerRow.SFID</td>
+            <td>@partnerRow.Remark</td>
+            <td>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(partnerRow.Id))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(partnerRow.Id))"></MatIconButton>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+    <MatIconButton Icon="add" OnClick="@(() => OpenAddDialog())"></MatIconButton>
+
+    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Potvrďte vymazání</MatDialogTitle>
+        <MatDialogContent>
+            Opravdu chcete vymazat dodavatele "@partner.Name" ?
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@Delete">Vymazat</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="edit"></MatIcon> Úprava záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@partner" OnValidSubmit="@Edit">
+                <DataAnnotationsValidator />
+                <p>
+                    <MatTextField Label="Jméno" @bind-Value="@partner.Name" />
+                    <ValidationMessage For="@(() => partner.Name)" />
+                </p>
+                <p>
+                    <MatSelect Label="Typ spojení" @bind-Value="@partner.EdiType">
+                        <MatOptionString></MatOptionString>
+                        <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
+                        <MatOptionString Value="WebEDI">WebEDI</MatOptionString>
+                    </MatSelect>
+                    <ValidationMessage For="@(() => partner.EdiType)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@partner.Gateway" Label="Gateway"></MatCheckbox>
+                    <ValidationMessage For="@(() => partner.Gateway)" />
+                </p>
+                <p>
+                    <MatTextField Label="SSID" @bind-Value="@partner.SSID" />
+                    <ValidationMessage For="@(() => partner.SSID)" />
+                </p>
+                <p>
+                    <MatTextField Label="SFID" @bind-Value="@partner.SFID" />
+                    <ValidationMessage For="@(() => partner.SFID)" />
+                </p>
+                <p>
+                    <MatTextField Label="Poznámka" @bind-Value="@partner.Remark" />
+                    <ValidationMessage For="@(() => partner.Remark)" />
+                </p>
+                <MatButton Type="submit" Raised="true">Upravit</MatButton>
+                <MatButton OnClick="@(async e => { editDialogOpen = false; await OnInitializedAsync();})">Zpět</MatButton>
+            </EditForm>
+        </MatDialogContent>
+        @*<MatDialogActions>
+                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Edit">Upravit</MatButton>
+            </MatDialogActions>*@
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@partner" OnValidSubmit="@Add">
+                <DataAnnotationsValidator />
+                <p>
+                    <MatTextField Label="Jméno" @bind-Value="@partner.Name" />
+                    <ValidationMessage For="@(() => partner.Name)" />
+                </p>
+                <p>
+                    <MatSelect Label="Typ spojení" @bind-Value="@partner.EdiType">
+                        <MatOptionString></MatOptionString>
+                        <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
+                        <MatOptionString Value="WebEDI">WebEDI</MatOptionString>
+                    </MatSelect>
+                    <ValidationMessage For="@(() => partner.EdiType)" />
+                </p>
+                <p>
+                    <MatCheckbox @bind-Value="@partner.Gateway" Label="Gateway"></MatCheckbox>
+                    <ValidationMessage For="@(() => partner.Gateway)" />
+                </p>
+                <p>
+                    <MatTextField Label="SSID" @bind-Value="@partner.SSID" />
+                    <ValidationMessage For="@(() => partner.SSID)" />
+                </p>
+                <p>
+                    <MatTextField Label="SFID" @bind-Value="@partner.SFID" />
+                    <ValidationMessage For="@(() => partner.SFID)" />
+                </p>
+                <p>
+                    <MatTextField Label="Poznámka" @bind-Value="@partner.Remark" />
+                    <ValidationMessage For="@(() => partner.Remark)" />
+                </p>
+                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
+                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
+            </EditForm>
+        </MatDialogContent>
+        @*<MatDialogActions>
+                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Add">Vytvořit</MatButton>
+            </MatDialogActions>*@
+    </MatDialog>
+
+
+}
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    Boolean deleteDialogOpen = false;
+    Boolean editDialogOpen = false;
+    Boolean addDialogOpen = false;
+
+    Partner[] partners;
+    Partner partner { get; set; } = new Partner();
+
+    string baseUrl;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        partners = await Http.GetJsonAsync<Partner[]>(baseUrl + "/api/partner/get");
+    }
+
+    public void OpenDeleteDialog(string partnerId)
+    {
+        partner = partners.Where(x => x.Id == partnerId).FirstOrDefault();
+        this.deleteDialogOpen = true;
+    }
+
+    public void OpenEditDialog(string partnerId)
+    {
+        partner = partners.Where(x => x.Id == partnerId).FirstOrDefault();
+        this.editDialogOpen = true;
+    }
+
+    public void OpenAddDialog()
+    {
+        this.addDialogOpen = true;
+    }
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync(baseUrl + "/api/partner/delete/" + partner.Id);
+        deleteDialogOpen = false;
+        partner = new Partner();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Edit()
+    {
+        await Http.PutJsonAsync(baseUrl + "/api/partner/edit/" + partner.Id, partner);
+        editDialogOpen = false;
+        partner = new Partner();
+        await OnInitializedAsync();
+    }
+
+    protected async Task Add()
+    {
+        baseUrl = AppSettingsService.GetBaseUrl();
+        await Http.PostJsonAsync(baseUrl + "/api/partner/create", partner);
+        addDialogOpen = false;
+        partner = new Partner();
+        await OnInitializedAsync();
+    }
+}
