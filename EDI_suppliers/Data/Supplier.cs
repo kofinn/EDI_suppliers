@@ -13,7 +13,7 @@ namespace EDI_suppliers.Data
     public class Supplier
     {
         [Key]
-        public string Id { get; set; }
+        public int SupplierId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Závod")]
         public string Plant { get; set; }
@@ -35,6 +35,6 @@ namespace EDI_suppliers.Data
         //    }
 
         //}
-        public ICollection<Connection> Connections { get; set; }
+        public ICollection<Connection> Connection { get; set; }
     }
 }

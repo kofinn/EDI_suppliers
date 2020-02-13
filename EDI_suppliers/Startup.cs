@@ -15,9 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EDI_suppliers.Areas.Identity;
 using EDI_suppliers.Data;
-using EDI_suppliers.Services;
 using Microsoft.OpenApi.Models;
 using System.Net.Http;
+using EDI_suppliers.Services;
 
 namespace EDI_suppliers
 {
@@ -75,9 +75,9 @@ namespace EDI_suppliers
             });
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddTransient<ISupplierService, ISupplierService>();
-            services.AddTransient<IPartnerService, IPartnerService>();
-            services.AddTransient<IConnectionService, IConnectionService>();
+            services.AddTransient<IConnectionService, ConnectionService>();
+            services.AddTransient<ISupplierService, SupplierService>();
+            services.AddTransient<IPartnerService, PartnerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

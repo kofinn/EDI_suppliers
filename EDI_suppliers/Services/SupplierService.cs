@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EDI_suppliers.Services
 {
-    public interface ISupplierService 
+    public interface ISupplierService
     {
         Task<List<Supplier>> Get();
         Task<Supplier> Get(int id);

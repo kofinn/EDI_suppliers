@@ -4,6 +4,7 @@
 
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Services.ISupplierService Service
 
 <h2>Přehled MFG Dodavatelů</h2>
 
@@ -29,8 +30,8 @@ else
             <td>@supplierRow.ContactIt</td>
             <td>@supplierRow.ContactLog</td>
             <td>
-                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierRow.Id))"></MatIconButton>
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierRow.Id))"></MatIconButton>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierRow.SupplierId))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierRow.SupplierId))"></MatIconButton>
             </td>
         </MatTableRow>
     </MatTable>
@@ -44,7 +45,7 @@ else
         </MatDialogContent>
         <MatDialogActions>
             <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
-            <MatButton OnClick="@Delete">Vymazat</MatButton>
+            <MatButton OnClick="@(() => Delete(supplier.SupplierId))">Vymazat</MatButton>
         </MatDialogActions>
     </MatDialog>
 
@@ -135,42 +136,51 @@ else
     Boolean editDialogOpen = false;
     Boolean addDialogOpen = false;
 
-    Supplier[] suppliers;
+
     Supplier supplier { get; set; } = new Supplier();
-
-    string baseUrl;
-
+    List<Supplier> suppliers;
 
     protected override async Task OnInitializedAsync()
     {
+        suppliers = await Service.Get();
     }
 
-    public void OpenDeleteDialog(string supplierId)
+    public void OpenDeleteDialog(int supplierId)
     {
-        supplier = suppliers.Where(x => x.Id == supplierId).FirstOrDefault();
+        supplier = suppliers.Where(x => x.SupplierId == supplierId).FirstOrDefault();
         this.deleteDialogOpen = true;
     }
 
-    public void OpenEditDialog(string supplierId)
+    public void OpenEditDialog(int supplierId)
     {
-        supplier = suppliers.Where(x => x.Id == supplierId).FirstOrDefault();
+        supplier = suppliers.Where(x => x.SupplierId == supplierId).FirstOrDefault();
         this.editDialogOpen = true;
     }
 
     public void OpenAddDialog()
     {
         this.addDialogOpen = true;
+        supplier = new Supplier();
     }
 
-    protected async Task Delete()
+    protected async Task Delete(int supplierId)
     {
+        await Service.Delete(supplierId);
+        deleteDialogOpen = false;
+        await OnInitializedAsync();
     }
 
     protected async Task Edit()
     {
+        await Service.Update(supplier);
+        editDialogOpen = false;
+        await OnInitializedAsync();
     }
 
     protected async Task Add()
     {
+        await Service.Add(supplier);
+        addDialogOpen = false;
+        await OnInitializedAsync();
     }
 }

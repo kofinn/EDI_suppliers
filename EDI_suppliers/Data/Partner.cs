@@ -13,7 +13,7 @@ namespace EDI_suppliers.Data
     public class Partner
     {
         [Key]
-        public string Id { get; set; }
+        public int PartnerId { get; set; }
 
         [Display(Name = "Jmeno EDI partnera")]
         public string Name { get; set; }

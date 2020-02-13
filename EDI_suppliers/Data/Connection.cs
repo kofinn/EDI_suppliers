@@ -13,7 +13,7 @@ namespace EDI_suppliers.Data
     public class Connection
     {
         [Key]
-        public string Id { get; set; }
+        public string ConnectionId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Typ spojeni")]
         public Type Type { get; set; }
