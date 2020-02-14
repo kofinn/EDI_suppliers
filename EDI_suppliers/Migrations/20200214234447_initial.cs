@@ -52,8 +52,8 @@ namespace EDI_suppliers.Migrations
                 {
                     PartnerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    EdiType = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    EdiType = table.Column<string>(nullable: false),
                     Gateway = table.Column<bool>(nullable: false),
                     SSID = table.Column<string>(nullable: true),
                     SFID = table.Column<string>(nullable: true),

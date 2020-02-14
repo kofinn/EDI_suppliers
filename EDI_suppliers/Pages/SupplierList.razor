@@ -96,6 +96,7 @@ else
                         <MatOptionString Value="P1">P1</MatOptionString>
                         <MatOptionString Value="P2">P2</MatOptionString>
                     </MatSelect>
+                    <ValidationMessage For="@(() => supplier.Plant)" />
                 </p>
                 <p>
                     <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplier.MfgId" />
