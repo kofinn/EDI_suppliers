@@ -12,7 +12,16 @@
 }
 else
 {
-    <MatAutocompleteList Items="@suppliers" TItem="Supplier" Label="Vyber MFG dodavatele"></MatAutocompleteList>
+    <MatAutocompleteList Items="@suppliers" TItem="Supplier" Label="Vyber MFG dodavatele" CustomStringSelector="@(i => i.Name)" @bind-Value="@supplier" ShowClearButton="true">
+        <ItemTemplate>
+            <div style="display: flex; flex-direction: row; width: 100%;">
+                <div style="flex: 1;">@context.Name</div>
+            </div>
+        </ItemTemplate>
+    </MatAutocompleteList>
+    <p>
+        Selected value: @(supplier?.Name)
+    </p>
 }
 
 @code
@@ -21,7 +30,7 @@ else
     Partner partner = null;
 
     List<Supplier> suppliers;
-    Supplier supplierMFG = null;
+    Supplier supplier = null;
 
     string baseUrl;
 

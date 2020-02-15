@@ -44,6 +44,14 @@ else
         </MatTableRow>
     </MatTable>
 
+    <MatAutocompleteList Items="@suppliers" TItem="Supplier" Label="Vyber MFG dodavatele" CustomStringSelector="@(i => i.Name)" @bind-Value="@connection.Supplier" ShowClearButton="true" Context="supp">
+        <ItemTemplate>
+            <div style="display: flex; flex-direction: row; width: 100%;">
+                <div style="flex: 1;">@supp.Name</div>
+            </div>
+        </ItemTemplate>
+    </MatAutocompleteList>
+
     <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
         <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Potvrďte vymazání</MatDialogTitle>
         <MatDialogContent>
@@ -59,6 +67,9 @@ else
         <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
         <MatDialogContent>
             <EditForm Model="@connection" OnValidSubmit="@Add">
+                <p>
+
+                </p>
                 <DataAnnotationsValidator />
                 <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
                 <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
@@ -83,6 +94,7 @@ else
     Boolean addDialogOpen = false;
 
     List<Supplier> suppliers;
+    Supplier supplier = null;
     List<Partner> partners;
     List<Connection> connections;
     Connection connection = new Connection();
