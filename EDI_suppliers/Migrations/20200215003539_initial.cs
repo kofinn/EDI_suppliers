@@ -191,7 +191,8 @@ namespace EDI_suppliers.Migrations
                 name: "Connections",
                 columns: table => new
                 {
-                    ConnectionId = table.Column<string>(nullable: false),
+                    ConnectionId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(nullable: false),
                     Calloff = table.Column<bool>(nullable: false),
                     Asn = table.Column<bool>(nullable: false),

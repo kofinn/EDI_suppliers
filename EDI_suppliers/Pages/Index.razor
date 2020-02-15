@@ -1,1 +1,136 @@
-﻿@page "/"
+﻿@using EDI_suppliers.Data
+
+@page "/"
+
+
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Services.IConnectionService ConnectionService
+@inject Services.ISupplierService SupplierService
+@inject Services.IPartnerService PartnerService
+
+
+<h2>Přehled spojení</h2>
+
+@if (connections == null)
+{
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+else
+{
+    <MatTable Items="@connections" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
+        <MatTableHeader>
+            <th>Dodavatel MFG</th>
+            <th>Partner EDI</th>
+            <th>Typ spojeni</th>
+            <th>Odvolavky</th>
+            <th>ASN</th>
+            <th>Nastaveni v MFG</th>
+            <th>Nastaveni EDI</th>
+            <th>Akce</th>
+        </MatTableHeader>
+        <MatTableRow Context="connectionRow">
+            <td>@connectionRow.Supplier.Name</td>
+            <td>@connectionRow.Partner.Name</td>
+            <td>@connectionRow.Type</td>
+            <td>@connectionRow.Calloff</td>
+            <td>@connectionRow.Asn</td>
+            <td>@connectionRow.SettingMfg.</td>
+            <td>@connectionRow.SettingEdi</td>
+            <td>
+                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(connectionRow.ConnectionId))"></MatIconButton>
+                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(connectionRow.ConnectionId))"></MatIconButton>
+            </td>
+        </MatTableRow>
+    </MatTable>
+
+    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Potvrďte vymazání</MatDialogTitle>
+        <MatDialogContent>
+            Opravdu chcete vymazat dodavatele "@connection.ConnectionId" ?
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
+            <MatButton OnClick="@(() => Delete(connection.ConnectionId))">Vymazat</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
+        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
+        <MatDialogContent>
+            <EditForm Model="@connection" OnValidSubmit="@Add">
+                <DataAnnotationsValidator />
+                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
+                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
+            </EditForm>
+        </MatDialogContent>
+        @*<MatDialogActions>
+                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
+                <MatButton OnClick="@Add">Vytvořit</MatButton>
+            </MatDialogActions>*@
+    </MatDialog>
+}
+
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    Boolean deleteDialogOpen = false;
+    Boolean editDialogOpen = false;
+    Boolean addDialogOpen = false;
+
+    List<Supplier> suppliers;
+    List<Partner> partners;
+    List<Connection> connections;
+    Connection connection = new Connection();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        suppliers = await SupplierService.Get();
+        partners = await PartnerService.Get();
+        connections = await ConnectionService.Get();
+    }
+
+    public void OpenDeleteDialog(int connectionId)
+    {
+        connection = connections.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
+        this.deleteDialogOpen = true;
+    }
+
+    public void OpenEditDialog(int connectionId)
+    {
+        connection = connections.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
+        this.editDialogOpen = true;
+    }
+
+    public void OpenAddDialog()
+    {
+        this.addDialogOpen = true;
+        connection = new Connection();
+    }
+
+    protected async Task Delete(int connectionId)
+    {
+        await ConnectionService.Delete(connectionId);
+        deleteDialogOpen = false;
+        await OnInitializedAsync();
+    }
+
+    protected async Task Edit()
+    {
+        await ConnectionService.Update(connection);
+        editDialogOpen = false;
+        await OnInitializedAsync();
+    }
+
+    protected async Task Add()
+    {
+        await ConnectionService.Add(connection);
+        addDialogOpen = false;
+        await OnInitializedAsync();
+    }
+}

@@ -51,7 +51,7 @@ else
         </MatDialogActions>
     </MatDialog>
 
-    @*<MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
+    <MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
         <MatDialogTitle><MatIcon Icon="edit"></MatIcon> Úprava záznamu</MatDialogTitle>
         <MatDialogContent>
             <EditForm Model="@partner" OnValidSubmit="@Edit">
@@ -63,8 +63,8 @@ else
                 <p>
                     <MatSelect Label="Typ spojení" @bind-Value="@partner.EdiType">
                         <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
-                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
                         <MatOptionString Value="WebEDI">WebEDI</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
                     </MatSelect>
                     <ValidationMessage For="@(() => partner.EdiType)" />
                 </p>
@@ -85,14 +85,14 @@ else
                     <ValidationMessage For="@(() => partner.Remark)" />
                 </p>
                 <MatButton Type="submit" Raised="true">Upravit</MatButton>
-                <MatButton OnClick="@(async e => { editDialogOpen = false; await OnInitializedAsync();})">Zpět</MatButton>
+                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
             </EditForm>
         </MatDialogContent>
-        <MatDialogActions>
+        @*<MatDialogActions>
                 <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
                 <MatButton OnClick="@Edit">Upravit</MatButton>
-            </MatDialogActions>
-    </MatDialog>*@
+            </MatDialogActions>*@
+    </MatDialog>
 
     <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
         <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
@@ -104,7 +104,10 @@ else
                     <ValidationMessage For="@(() => partner.Name)" />
                 </p>
                 <p>
-                    <MatTextField @bind-Value="@partner.EdiType" Label="Typ spojení"></MatTextField>
+                    <MatSelect Label="Typ spojení" @bind-Value="@partner.EdiType">
+                        <MatOptionString Value="OFTP2">OFTP2</MatOptionString>
+                        <MatOptionString Value="ISDN">ISDN</MatOptionString>
+                    </MatSelect>
                     <ValidationMessage For="@(() => partner.EdiType)" />
                 </p>
                 <p>

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EDI_suppliers.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200214234447_initial")]
+    [Migration("20200215003539_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,8 +23,10 @@ namespace EDI_suppliers.Migrations
 
             modelBuilder.Entity("EDI_suppliers.Data.Connection", b =>
                 {
-                    b.Property<string>("ConnectionId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ConnectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Asn")
                         .HasColumnType("bit");

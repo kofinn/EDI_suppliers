@@ -21,8 +21,10 @@ namespace EDI_suppliers.Migrations
 
             modelBuilder.Entity("EDI_suppliers.Data.Connection", b =>
                 {
-                    b.Property<string>("ConnectionId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ConnectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Asn")
                         .HasColumnType("bit");
