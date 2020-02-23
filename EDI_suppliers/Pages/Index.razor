@@ -1,6 +1,6 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/"
+@*@page "/"*@
 
 
 @inject HttpClient Http
@@ -14,73 +14,11 @@
 
 @if (connections == null)
 {
-    <MatProgressBar Indeterminate="true"></MatProgressBar>
+
 }
 else
 {
-    <MatTable Items="@connections" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
-        <MatTableHeader>
-            <th>Dodavatel MFG</th>
-            <th>Partner EDI</th>
-            <th>Typ spojeni</th>
-            <th>Odvolavky</th>
-            <th>ASN</th>
-            <th>Nastaveni v MFG</th>
-            <th>Nastaveni EDI</th>
-            <th>Akce</th>
-        </MatTableHeader>
-        <MatTableRow Context="connectionRow">
-            <td>@connectionRow.Supplier.Name</td>
-            <td>@connectionRow.Partner.Name</td>
-            <td>@connectionRow.Type</td>
-            <td>@connectionRow.Calloff</td>
-            <td>@connectionRow.Asn</td>
-            <td>@connectionRow.SettingMfg.</td>
-            <td>@connectionRow.SettingEdi</td>
-            <td>
-                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(connectionRow.ConnectionId))"></MatIconButton>
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(connectionRow.ConnectionId))"></MatIconButton>
-            </td>
-        </MatTableRow>
-    </MatTable>
-
-    <MatIconButton Icon="add" OnClick="@(() => OpenAddDialog())"></MatIconButton>
-
-    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
-        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Potvrďte vymazání</MatDialogTitle>
-        <MatDialogContent>
-            Opravdu chcete vymazat dodavatele "@connection.ConnectionId" ?
-        </MatDialogContent>
-        <MatDialogActions>
-            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
-            <MatButton OnClick="@(() => Delete(connection.ConnectionId))">Vymazat</MatButton>
-        </MatDialogActions>
-    </MatDialog>
-
-    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
-        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
-        <MatDialogContent>
-            <EditForm Model="@connection" OnValidSubmit="@Add">
-
-                <DataAnnotationsValidator />
-                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
-                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
-            </EditForm>
-            <p>
-                <MatAutocompleteList Items="@suppliers" TItem="Supplier" Label="Vyber MFG dodavatele" CustomStringSelector="@(i => i.Name)" @bind-Value="@connection.Supplier" ShowClearButton="true" Context="supp">
-                    <ItemTemplate>
-                        <div style="display: flex; flex-direction: row; width: 100%;">
-                            <div style="flex: 1;">@supp.Name</div>
-                        </div>
-                    </ItemTemplate>
-                </MatAutocompleteList>
-            </p>
-        </MatDialogContent>
-        @*<MatDialogActions>
-                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
-                <MatButton OnClick="@Add">Vytvořit</MatButton>
-            </MatDialogActions>*@
-    </MatDialog>
+    <h2>Přehled MFG Dodavatelů</h2>
 }
 
 

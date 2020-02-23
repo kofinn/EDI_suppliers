@@ -1,6 +1,8 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/supplierlist"
+@*@page "/supplierlist"*@
+
+@page "/"
 
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -10,121 +12,21 @@
 
 @if (suppliers == null)
 {
-    <MatProgressBar Indeterminate="true"></MatProgressBar>
 }
 else
 {
-    <MatTable Items="@suppliers" class="mat-elevation" LoadInitialData="true" Striped="true" AllowSelection="true" ShowFooter="false" ShowPaging="false" PageSize="999999">
-        <MatTableHeader>
-            <th>Závod</th>
-            <th>Číslo dodavatele</th>
-            <th>Jméno dodavatele</th>
-            <th>Kontakt IT</th>
-            <th>Kontakt Log</th>
-            <th>Akce</th>
-        </MatTableHeader>
-        <MatTableRow Context="supplierRow">
-            <td>@supplierRow.Plant</td>
-            <td>@supplierRow.MfgId</td>
-            <td>@supplierRow.Name</td>
-            <td>@supplierRow.ContactIt</td>
-            <td>@supplierRow.ContactLog</td>
-            <td>
-                <MatIconButton Icon="edit" OnClick="@(() => OpenEditDialog(supplierRow.SupplierId))"></MatIconButton>
-                <MatIconButton Icon="delete" OnClick="@(() => OpenDeleteDialog(supplierRow.SupplierId))"></MatIconButton>
-            </td>
-        </MatTableRow>
-    </MatTable>
-
-    <MatIconButton Icon="add" OnClick="@(() => OpenAddDialog())"></MatIconButton>
-
-    <MatDialog @bind-IsOpen="@deleteDialogOpen" Style="z-index:100">
-        <MatDialogTitle><MatIcon Icon="warning"></MatIcon> Potvrďte vymazání</MatDialogTitle>
-        <MatDialogContent>
-            Opravdu chcete vymazat dodavatele "@supplier.MfgId" ?
-        </MatDialogContent>
-        <MatDialogActions>
-            <MatButton OnClick="@(e => { deleteDialogOpen = false; })">Zpět</MatButton>
-            <MatButton OnClick="@(() => Delete(supplier.SupplierId))">Vymazat</MatButton>
-        </MatDialogActions>
-    </MatDialog>
-
-    <MatDialog @bind-IsOpen="@editDialogOpen" Style="z-index:100">
-        <MatDialogTitle><MatIcon Icon="edit"></MatIcon> Úprava záznamu</MatDialogTitle>
-        <MatDialogContent>
-            <EditForm Model="@supplier" OnValidSubmit="@Edit">
-                <DataAnnotationsValidator />
-                <p>
-                    <MatSelect Label="Závod" @bind-Value="@supplier.Plant">
-                        <MatOptionString Value="P1">P1</MatOptionString>
-                        <MatOptionString Value="P2">P2</MatOptionString>
-                    </MatSelect>
-                </p>
-                <p>
-                    <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplier.MfgId" />
-                    <ValidationMessage For="@(() => supplier.MfgId)" />
-                </p>
-                <p>
-                    <MatTextField Label="Jméno dodavatele" @bind-Value="@supplier.Name" />
-                    <ValidationMessage For="@(() => supplier.Name)" />
-                </p>
-                <p>
-                    <MatTextField Label="Kontakt IT" @bind-Value="@supplier.ContactIt" />
-                    <ValidationMessage For="@(() => supplier.ContactIt)" />
-                </p>
-                <p>
-                    <MatTextField Label="Kontakt Logistika" @bind-Value="@supplier.ContactLog" />
-                    <ValidationMessage For="@(() => supplier.ContactLog)" />
-                </p>
-                <MatButton Type="submit" Raised="true">Upravit</MatButton>
-                <MatButton OnClick="@(async e => { editDialogOpen = false; await OnInitializedAsync();})">Zpět</MatButton>
-            </EditForm>
-        </MatDialogContent>
-        @*<MatDialogActions>
-                <MatButton OnClick="@(e => { editDialogOpen = false; })">Zpět</MatButton>
-                <MatButton OnClick="@Edit">Upravit</MatButton>
-            </MatDialogActions>*@
-    </MatDialog>
-
-    <MatDialog @bind-IsOpen="@addDialogOpen" Style="z-index:100">
-        <MatDialogTitle><MatIcon Icon="add"></MatIcon> Vytvoření záznamu</MatDialogTitle>
-        <MatDialogContent>
-            <EditForm Model="@supplier" OnValidSubmit="@Add">
-                <DataAnnotationsValidator />
-                <p>
-                    <MatSelect Label="Závod" @bind-Value="@supplier.Plant">
-                        <MatOptionString Value="P1">P1</MatOptionString>
-                        <MatOptionString Value="P2">P2</MatOptionString>
-                    </MatSelect>
-                    <ValidationMessage For="@(() => supplier.Plant)" />
-                </p>
-                <p>
-                    <MatTextField Label="Dodavatelské číslo MFG" @bind-Value="@supplier.MfgId" />
-                    <ValidationMessage For="@(() => supplier.MfgId)" />
-                </p>
-                <p>
-                    <MatTextField Label="Jméno dodavatele" @bind-Value="@supplier.Name" />
-                    <ValidationMessage For="@(() => supplier.Name)" />
-                </p>
-                <p>
-                    <MatTextField Label="Kontakt IT" @bind-Value="@supplier.ContactIt" />
-                    <ValidationMessage For="@(() => supplier.ContactIt)" />
-                </p>
-                <p>
-                    <MatTextField Label="Kontakt Logistika" @bind-Value="@supplier.ContactLog" />
-                    <ValidationMessage For="@(() => supplier.ContactLog)" />
-                </p>
-                <MatButton Type="submit" Raised="true">Vytvořit</MatButton>
-                <MatButton OnClick="@(async e => { addDialogOpen = false; await OnInitializedAsync();  })">Zpět</MatButton>
-            </EditForm>
-        </MatDialogContent>
-        @*<MatDialogActions>
-                <MatButton OnClick="@(e => { addDialogOpen = false; })">Zpět</MatButton>
-                <MatButton OnClick="@Add">Vytvořit</MatButton>
-            </MatDialogActions>*@
-    </MatDialog>
-
-
+    <DataGrid TItem="Supplier"
+              Data="@suppliers"
+              EditMode="DataGridEditMode.Inline"
+              Filterable="true">
+        <DataGridCommandColumn TItem="Supplier" />
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Plant)" Caption="Závod" Editable="true" />
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.MfgId)" Caption="Dodavatelské číslo" Editable="true" />
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Name)" Caption="Jméno dodavatele" Editable="true" />
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactIt)" Caption="Kontakt IT" Editable="true" />
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true">
+        </DataGridColumn>
+    </DataGrid>
 }
 
 @code {

@@ -18,6 +18,9 @@ using EDI_suppliers.Data;
 using Microsoft.OpenApi.Models;
 using System.Net.Http;
 using EDI_suppliers.Services;
+using Blazorise;
+using Blazorise.Material;
+using Blazorise.Icons.Material;
 
 namespace EDI_suppliers
 {
@@ -40,8 +43,14 @@ namespace EDI_suppliers
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
-            
-            
+            services.AddBlazorise(options =>
+            {
+                options.ChangeTextOnKeyPress = true; // optional
+             })
+            .AddMaterialProviders()
+            .AddMaterialIcons();
+
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -109,6 +118,10 @@ namespace EDI_suppliers
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.ApplicationServices
+            .UseMaterialProviders()
+            .UseMaterialIcons();
 
             app.UseAuthentication();
             app.UseAuthorization();
