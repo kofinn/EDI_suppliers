@@ -1,33 +1,19 @@
 ﻿@using Microsoft.AspNetCore.Components;
 
 
-<Sidebar @ref="sidebar">
-    <SidebarContent>
-        <SidebarBrand>
-            <a href="">EDI dodavatelé</a>
-        </SidebarBrand>
-        <SidebarNavigation>
-            <SidebarItem>
-                <SidebarLink To="" Title="Spojení">
-                    <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Spojení
-                </SidebarLink>
-            </SidebarItem>
-            <SidebarItem>
-                <SidebarLink To="partnerlist" Title="EDI partneři">
-                    <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />EDI partneři
-                </SidebarLink>
-            </SidebarItem>
-            <SidebarItem>
-                <SidebarLink To="supplierlist" Title="MFG Dodavatelé">
-                    <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />MFG Dodavatelé
-                </SidebarLink>
-            </SidebarItem>
-        </SidebarNavigation>
-    </SidebarContent>
-</Sidebar>
+<MatNavMenu>
+    <MatNavItem Href="/">
+        <MatIcon>home</MatIcon>Home page
+    </MatNavItem>
+    <MatNavItem Href="supplierlist">
+        <MatIcon>list</MatIcon>Dodavatele MFG
+    </MatNavItem>
+    <MatNavItem Href="partnerlist">
+        <MatIcon>list</MatIcon>EDI spojeni
+    </MatNavItem>
+</MatNavMenu>
 
 
 @code
 {
-    Sidebar sidebar;
 }
