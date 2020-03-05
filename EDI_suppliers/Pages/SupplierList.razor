@@ -1,8 +1,6 @@
 ﻿@using EDI_suppliers.Data
 
-@*@page "/supplierlist"*@
-
-@page "/"
+@page "/supplierlist"
 
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -19,15 +17,63 @@ else
               Data="@suppliers"
               Editable="true"
               EditMode="DataGridEditMode.Inline"
-              Filterable="true">
-        <DataGridCommandColumn TItem="Supplier" />
-        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Plant)" Caption="Závod" Editable="true" />
+              Filterable="true"
+              RowInserted="@OnRowInserted"
+              RowUpdated="@OnRowUpdated"
+              RowRemoved="@OnRowRemoved">              
+        <DataGridCommandColumn TItem="Supplier">
+            <NewCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+            </EditCommandTemplate>
+            <SaveCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+            </SaveCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+            </CancelCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+            </DeleteCommandTemplate>
+            <ClearFilterCommandTemplate>
+                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+            </ClearFilterCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Plant)" Caption="Závod" Editable="true">
+            <EditTemplate>
+                <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="0">P1</SelectItem>
+                        <SelectItem Value="1">P2</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.MfgId)" Caption="Dodavatelské číslo" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Name)" Caption="Jméno dodavatele" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactIt)" Caption="Kontakt IT" Editable="true" />
-        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true">
-        </DataGridColumn>
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true"/>
     </DataGrid>
+
+
+    <Modal @ref="modalDelete">
+        <ModalBackdrop />
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Vymazaní</ModalTitle>
+                <CloseButton Clicked="@HideModal" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Opravdu si přejete vymazat @supplierName</FieldLabel>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Ne</Button>
+                <Button Color="Color.Primary" Clicked="@HideModal">Ano</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
 }
 
 @code {
@@ -36,12 +82,22 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    Boolean deleteDialogOpen = false;
-    Boolean editDialogOpen = false;
-    Boolean addDialogOpen = false;
+    // reference to the modal component
+    private Modal modalDelete;
+
+    private void ShowModal()
+    {
+        modalDelete.Show();
+    }
+
+    private void HideModal()
+    {
+        modalDelete.Hide();
+    }
 
     List<Supplier> suppliers;
     Supplier supplier { get; set; } = new Supplier();
+    string supplierName;
 
 
     protected override async Task OnInitializedAsync()
@@ -49,42 +105,22 @@ else
         suppliers = await Service.Get();
     }
 
-    public void OpenDeleteDialog(int supplierId)
+    void OnRowInserted(SavedRowItem<Supplier, Dictionary<string, object>> e)
     {
-        supplier = suppliers.Where(x => x.SupplierId == supplierId).FirstOrDefault();
-        this.deleteDialogOpen = true;
+        var supplier = e.Item;
+        Service.Add(supplier);
     }
 
-    public void OpenEditDialog(int supplierId)
+    void OnRowUpdated(SavedRowItem<Supplier, Dictionary<string, object>> e)
     {
-        supplier = suppliers.Where(x => x.SupplierId == supplierId).FirstOrDefault();
-        this.editDialogOpen = true;
+        var supplier = e.Item;
+        Service.Update(supplier);
     }
 
-    public void OpenAddDialog()
+    void OnRowRemoved(Supplier supplier)
     {
-        this.addDialogOpen = true;
-        supplier = new Supplier();
-    }
-
-    protected async Task Delete(int supplierId)
-    {
-        await Service.Delete(supplierId);
-        deleteDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Edit()
-    {
-        await Service.Update(supplier);
-        editDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Add()
-    {
-        await Service.Add(supplier);
-        addDialogOpen = false;
-        await OnInitializedAsync();
+        //supplierName = supplier.Name;
+        //modalDelete.Show();
+        Service.Delete(supplier.SupplierId);
     }
 }

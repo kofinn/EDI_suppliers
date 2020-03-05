@@ -13,6 +13,90 @@
 }
 else
 {
+    <DataGrid TItem="Partner"
+              Data="@partners"
+              Editable="true"
+              EditMode="DataGridEditMode.Inline"
+              Filterable="true"
+              RowInserted="@OnRowInserted"
+              RowUpdated="@OnRowUpdated"
+              RowRemoved="@OnRowRemoved">
+        <DataGridCommandColumn TItem="Partner">
+            <NewCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+            </EditCommandTemplate>
+            <SaveCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+            </SaveCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+            </CancelCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+            </DeleteCommandTemplate>
+            <ClearFilterCommandTemplate>
+                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+            </ClearFilterCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.EdiType)" Caption="Typ EDI spojení" Editable="true">
+            <EditTemplate>
+                <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="0">OFTP2</SelectItem>
+                    <SelectItem Value="1">ISDN</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Gateway)" Caption="Gateway" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var gateway = (context as Partner).Gateway;
+
+                    if (gateway == false)
+                    {
+                        @("NE");
+                    }
+                    else if (gateway == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true" />
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
+    </DataGrid>
+
+
+    <Modal @ref="modalDelete">
+        <ModalBackdrop />
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Vymazaní</ModalTitle>
+                <CloseButton Clicked="@HideModal" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Opravdu si přejete vymazat @partnerName</FieldLabel>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Ne</Button>
+                <Button Color="Color.Primary" Clicked="@HideModal">Ano</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
 }
 
 @code {
@@ -21,55 +105,45 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    Boolean deleteDialogOpen = false;
-    Boolean editDialogOpen = false;
-    Boolean addDialogOpen = false;
-
     List<Partner> partners;
     Partner partner { get; set; } = new Partner();
 
+    string partnerName;
+
+    // reference to the modal component
+    private Modal modalDelete;
+
+    private void ShowModal()
+    {
+        modalDelete.Show();
+    }
+
+    private void HideModal()
+    {
+        modalDelete.Hide();
+    }
 
     protected override async Task OnInitializedAsync()
     {
         partners = await Service.Get();
     }
 
-    public void OpenDeleteDialog(int partnerId)
+    void OnRowInserted(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
-        partner = partners.Where(x => x.PartnerId == partnerId).FirstOrDefault();
-        this.deleteDialogOpen = true;
+        var partner = e.Item;
+        Service.Add(partner);
     }
 
-    public void OpenEditDialog(int partnerId)
+    void OnRowUpdated(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
-        partner = partners.Where(x => x.PartnerId == partnerId).FirstOrDefault();
-        this.editDialogOpen = true;
+        var partner = e.Item;
+        Service.Update(partner);
     }
 
-    public void OpenAddDialog()
+    void OnRowRemoved(Partner partner)
     {
-        this.addDialogOpen = true;
-        partner = new Partner();
-    }
-
-    protected async Task Delete(int partnerId)
-    {
-        await Service.Delete(partnerId);
-        deleteDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Edit()
-    {
-        await Service.Update(partner);
-        editDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Add()
-    {
-        await Service.Add(partner);
-        addDialogOpen = false;
-        await OnInitializedAsync();
+        //supplierName = supplier.Name;
+        //modalDelete.Show();
+        Service.Delete(partner.PartnerId);
     }
 }

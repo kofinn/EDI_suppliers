@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EDI_suppliers.Data
 {
-    //public enum EdiType
-    //{
-        //OFTP2, ISDN
-    //}
+   public enum EdiType
+    {
+        OFTP2, ISDN
+    }
     public class Partner
     {
         [Key]
@@ -19,7 +19,7 @@ namespace EDI_suppliers.Data
         public string Name { get; set; }
         [Display(Name = "Typ EDI spojení")]
         [Required(ErrorMessage = "Hodnota musí být zadána")]
-        public string EdiType { get; set; }
+        public EdiType EdiType { get; set; }
         [Display(Name = "Gateway")]
         public Boolean Gateway { get; set; }
         [Display(Name = "SSID")]

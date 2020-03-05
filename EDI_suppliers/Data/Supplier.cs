@@ -6,17 +6,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EDI_suppliers.Data
 {
-    //public enum Plant
-    //{
-    //    P1,P2
-    //}
+    public enum Plant
+    {
+        P1,P2
+    }
     public class Supplier
     {
         [Key]
         public int SupplierId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Závod")]
-        public string Plant { get; set; }
+        public Plant Plant { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Dodavatelské číslo MFG")]
         public string MfgId { get; set; }
