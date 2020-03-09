@@ -18,69 +18,70 @@
 }
 else
 {
+<SelectEdit TValue="Supplier" SelectedValue="@supplier">
+    @{
+        foreach (Supplier sup in suppliers)
+        {
+            <SelectItem Value="@sup">@sup.MfgId</SelectItem>
+        }
+    }
+</SelectEdit>
 }
 
 
-@code {
+    @code {
 
-    // AuthenticationState is available as a CascadingParameter
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+        // AuthenticationState is available as a CascadingParameter
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    Boolean deleteDialogOpen = false;
-    Boolean editDialogOpen = false;
-    Boolean addDialogOpen = false;
+        string partnerName;
 
-    List<Supplier> suppliers;
-    Supplier supplier = null;
-    List<Partner> partners;
-    List<Connection> connections;
-    Connection connection = new Connection();
+        // reference to the modal component
+        private Modal modalDelete;
+
+        List<Supplier> suppliers;
+        List<Partner> partners;
+        List<Connection> connections;
+        Supplier supplier = new Supplier();
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        suppliers = await SupplierService.Get();
-        partners = await PartnerService.Get();
-        connections = await ConnectionService.Get();
+        protected override async Task OnInitializedAsync()
+        {
+            suppliers = await SupplierService.Get();
+            partners = await PartnerService.Get();
+            connections = await ConnectionService.Get();
+        }
+
+
+
+        private void ShowModal()
+        {
+            modalDelete.Show();
+        }
+
+        private void HideModal()
+        {
+            modalDelete.Hide();
+        }
+
+
+        void OnRowInserted(SavedRowItem<Connection, Dictionary<string, object>> e)
+        {
+            var connection = e.Item;
+            ConnectionService.Add(connection);
+        }
+
+        void OnRowUpdated(SavedRowItem<Connection, Dictionary<string, object>> e)
+        {
+            var connection = e.Item;
+            ConnectionService.Update(connection);
+        }
+
+        void OnRowRemoved(Connection connection)
+        {
+            //supplierName = supplier.Name;
+            //modalDelete.Show();
+            ConnectionService.Delete(connection.ConnectionId);
+        }
     }
-
-    public void OpenDeleteDialog(int connectionId)
-    {
-        connection = connections.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
-        this.deleteDialogOpen = true;
-    }
-
-    public void OpenEditDialog(int connectionId)
-    {
-        connection = connections.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
-        this.editDialogOpen = true;
-    }
-
-    public void OpenAddDialog()
-    {
-        this.addDialogOpen = true;
-        connection = new Connection();
-    }
-
-    protected async Task Delete(int connectionId)
-    {
-        await ConnectionService.Delete(connectionId);
-        deleteDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Edit()
-    {
-        await ConnectionService.Update(connection);
-        editDialogOpen = false;
-        await OnInitializedAsync();
-    }
-
-    protected async Task Add()
-    {
-        await ConnectionService.Add(connection);
-        addDialogOpen = false;
-        await OnInitializedAsync();
-    }
-}

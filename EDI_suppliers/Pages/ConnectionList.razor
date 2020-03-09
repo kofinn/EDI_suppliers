@@ -1,0 +1,232 @@
+﻿@using EDI_suppliers.Data
+
+@page "/connectionlist"
+
+
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Services.IConnectionService ConnectionService
+@inject Services.ISupplierService SupplierService
+@inject Services.IPartnerService PartnerService
+
+
+<h2>Přehled spojení</h2>
+
+@if (connections == null)
+{
+
+}
+else
+{
+    <DataGrid TItem="Connection"
+              Data="@connections"
+              Editable="true"
+              EditMode="DataGridEditMode.Inline"
+              Filterable="true"
+              RowInserted="@OnRowInserted"
+              RowUpdated="@OnRowUpdated"
+              RowRemoved="@OnRowRemoved">
+        <DataGridCommandColumn TItem="Connection">
+            <NewCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+            </EditCommandTemplate>
+            <SaveCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+            </SaveCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+            </CancelCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+            </DeleteCommandTemplate>
+            <ClearFilterCommandTemplate>
+                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+            </ClearFilterCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Dodavatel" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var supplier = context.Supplier;
+
+                    if (supplier != null)
+                    {
+                        supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
+                        @($"{supplier.MfgId}");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="Supplier" SelectedValue="@(( (Supplier)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    @{
+                        foreach (Supplier sup in suppliers)
+                        {
+                            <SelectItem Value="@sup">@sup.MfgId</SelectItem>
+                        }
+                    }
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Jméno" Editable="false">
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Calloff)" Caption="Odvolávky" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var calloff = (context as Connection).Calloff;
+
+                    if (calloff == false)
+                    {
+                        @("NE");
+                    }
+                    else if (calloff == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Asn)" Caption="Dodací listy" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var asn = (context as Connection).Asn;
+
+                    if (asn == false)
+                    {
+                        @("NE");
+                    }
+                    else if (asn == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingMfg)" Caption="Nastavení MFG" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var settingmfg = (context as Connection).SettingMfg;
+
+                    if (settingmfg == false)
+                    {
+                        @("NE");
+                    }
+                    else if (settingmfg == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingEdi)" Caption="Nastavení EDI" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var settingedi = (context as Connection).SettingEdi;
+
+                    if (settingedi == false)
+                    {
+                        @("NE");
+                    }
+                    else if (settingedi == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Type)" Caption="Typ spojení" Editable="true">
+            <EditTemplate>
+                <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="0">WebEDI</SelectItem>
+                    <SelectItem Value="1">EDI</SelectItem>
+                    <SelectItem Value="1">email</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        @*<DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner.Name)" Caption="EDI partner" Editable="true" />*@
+    </DataGrid>
+}
+
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    string partnerName;
+
+    // reference to the modal component
+    private Modal modalDelete;
+
+    List<Supplier> suppliers;
+    List<Partner> partners;
+    List<Connection> connections;
+
+    Connection connection = new Connection();
+    Supplier supplier = new Supplier();
+
+    protected override async Task OnInitializedAsync()
+    {
+        suppliers = await SupplierService.Get();
+        partners = await PartnerService.Get();
+        connections = await ConnectionService.Get();
+    }
+
+
+
+    private void ShowModal()
+    {
+        modalDelete.Show();
+    }
+
+    private void HideModal()
+    {
+        modalDelete.Hide();
+    }
+
+
+    void OnRowInserted(SavedRowItem<Connection, Dictionary<string, object>> e)
+    {
+        var connection = e.Item;
+        ConnectionService.Add(connection);
+    }
+
+    void OnRowUpdated(SavedRowItem<Connection, Dictionary<string, object>> e)
+    {
+        var connection = e.Item;
+        ConnectionService.Update(connection);
+    }
+
+    void OnRowRemoved(Connection connection)
+    {
+        //supplierName = supplier.Name;
+        //modalDelete.Show();
+        ConnectionService.Delete(connection.ConnectionId);
+    }
+}
