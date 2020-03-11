@@ -70,6 +70,17 @@ else
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Jméno" Editable="false">
+            <DisplayTemplate>
+                @{
+                    var supplier = context.Supplier;
+
+                    if (supplier != null)
+                    {
+                        supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
+                        @($"{supplier.Name}");
+                    }
+                }
+            </DisplayTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Calloff)" Caption="Odvolávky" Editable="true">
             <DisplayTemplate>
@@ -168,7 +179,29 @@ else
                 </SelectEdit>
             </EditTemplate>
         </DataGridColumn>
-        @*<DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner.Name)" Caption="EDI partner" Editable="true" />*@
+        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner)" Caption="EDI partner" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var partner = context.Partner;
+
+                    if (partner != null)
+                    {
+                        partner = partners.Where(x => x.PartnerId == partner.PartnerId).FirstOrDefault();
+                        @($"{partner.Name}");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="Partner" SelectedValue="@(( (Partner)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    @{
+                        foreach (Partner par in partners)
+                        {
+                            <SelectItem Value="@par">@par.Name</SelectItem>
+                        }
+                    }
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
     </DataGrid>
 }
 
