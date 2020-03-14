@@ -1,0 +1,111 @@
+﻿@using EDI_suppliers.Data
+
+@page "/gatewaylist"
+
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Services.IPartnerService PartnerService
+@inject Services.IGatewayService GatewayService
+
+<h2>Přehled EDI Gateway</h2>
+
+@if (gateways == null)
+{
+}
+else
+{
+    <DataGrid TItem="Gateway"
+              Data="@gateways"
+              Editable="true"
+              PageSize="999999"
+              EditMode="DataGridEditMode.Inline"
+              Filterable="true"
+              RowInserted="@OnRowInserted"
+              RowUpdated="@OnRowUpdated"
+              RowRemoved="@OnRowRemoved"
+              @bind-SelectedRow="@selectedGateway"
+              DetailRowTrigger="@((item)=>item.Partner?.Count > 0 && item.GatewayId == selectedGateway?.GatewayId)"
+              >
+        <ChildContent>
+            <DataGridCommandColumn TItem="Gateway">
+                <NewCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                </EditCommandTemplate>
+                <SaveCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                </SaveCommandTemplate>
+                <CancelCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                </CancelCommandTemplate>
+                <DeleteCommandTemplate>
+                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                </DeleteCommandTemplate>
+                <ClearFilterCommandTemplate>
+                    <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                </ClearFilterCommandTemplate>
+            </DataGridCommandColumn>
+            <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.Name)" Caption="Jmeno Gateway" Editable="true" />
+            <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.SSID)" Caption="SSID" Editable="true" />
+            <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.EdiType)" Caption="Typ EDI spojení" Editable="true">
+                <EditTemplate>
+                    <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="0">OFTP2</SelectItem>
+                        <SelectItem Value="1">ISDN</SelectItem>
+                    </SelectEdit>
+                </EditTemplate>
+            </DataGridColumn>
+        </ChildContent>
+        <DetailRowTemplate>
+            @{ 
+                var partners = (context as Gateway).Partner;
+
+                <DataGrid TItem="Partner"
+                          Data="partners"
+                          Sortable="false">
+                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jméno EDI parnera"/>
+                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID"/>
+                </DataGrid>
+            }
+        </DetailRowTemplate>
+    </DataGrid>
+}
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    List<Gateway> gateways;
+    List<Partner> partners;
+    Gateway selectedGateway;
+    Gateway gateway { get; set; } = new Gateway();
+
+    protected override async Task OnInitializedAsync()
+    {
+        partners = await PartnerService.Get();
+        gateways = await GatewayService.Get();
+    }
+
+    void OnRowInserted(SavedRowItem<Gateway, Dictionary<string, object>> e)
+    {
+        var gateway = e.Item;
+        GatewayService.Add(gateway);
+    }
+
+    void OnRowUpdated(SavedRowItem<Gateway, Dictionary<string, object>> e)
+    {
+        var gateway = e.Item;
+        GatewayService.Update(gateway);
+    }
+
+    void OnRowRemoved(Gateway gateway)
+    {
+        //supplierName = supplier.Name;
+        //modalDelete.Show();
+        GatewayService.Delete(gateway.GatewayId);
+    }
+}

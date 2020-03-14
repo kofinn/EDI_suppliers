@@ -23,6 +23,7 @@ else
               Editable="true"
               EditMode="DataGridEditMode.Inline"
               Filterable="true"
+              PageSize="999999"
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
               RowRemoved="@OnRowRemoved">
@@ -63,7 +64,7 @@ else
                     @{
                         foreach (Supplier sup in suppliers)
                         {
-                            <SelectItem Value="@sup">@sup.MfgId</SelectItem>
+                            <SelectItem TValue="Supplier" Value="@sup">@sup.MfgId</SelectItem>
                         }
                     }
                 </SelectEdit>
@@ -229,18 +230,6 @@ else
         suppliers = await SupplierService.Get();
         partners = await PartnerService.Get();
         connections = await ConnectionService.Get();
-    }
-
-
-
-    private void ShowModal()
-    {
-        modalDelete.Show();
-    }
-
-    private void HideModal()
-    {
-        modalDelete.Hide();
     }
 
 

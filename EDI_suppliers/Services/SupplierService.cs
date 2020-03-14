@@ -33,9 +33,18 @@ namespace EDI_suppliers.Services
         }
         public async Task<Supplier> Add(Supplier supplier)
         {
-            _context.Suppliers.Add(supplier);
-            await _context.SaveChangesAsync();
-            return supplier;
+            List<Supplier> suppliers = await _context.Suppliers.ToListAsync();
+            if(suppliers.Where(x=> x.MfgId == supplier.MfgId).Count()>0)
+            {
+                return null;
+            }
+            else
+            {
+                _context.Suppliers.Add(supplier);
+                await _context.SaveChangesAsync();
+                return supplier;
+            }
+
         }
         public async Task<Supplier> Update(Supplier supplier)
         {

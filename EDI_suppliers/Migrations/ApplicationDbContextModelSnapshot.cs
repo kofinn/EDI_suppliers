@@ -56,6 +56,27 @@ namespace EDI_suppliers.Migrations
                     b.ToTable("Connections");
                 });
 
+            modelBuilder.Entity("EDI_suppliers.Data.Gateway", b =>
+                {
+                    b.Property<int>("GatewayId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("EdiType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SSID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("GatewayId");
+
+                    b.ToTable("Gateways");
+                });
+
             modelBuilder.Entity("EDI_suppliers.Data.Partner", b =>
                 {
                     b.Property<int>("PartnerId")
@@ -66,7 +87,10 @@ namespace EDI_suppliers.Migrations
                     b.Property<int>("EdiType")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Gateway")
+                    b.Property<int?>("GatewayId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("GatewayT")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -83,6 +107,8 @@ namespace EDI_suppliers.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PartnerId");
+
+                    b.HasIndex("GatewayId");
 
                     b.ToTable("Partners");
                 });
@@ -325,6 +351,13 @@ namespace EDI_suppliers.Migrations
                     b.HasOne("EDI_suppliers.Data.Supplier", "Supplier")
                         .WithMany("Connection")
                         .HasForeignKey("SupplierId");
+                });
+
+            modelBuilder.Entity("EDI_suppliers.Data.Partner", b =>
+                {
+                    b.HasOne("EDI_suppliers.Data.Gateway", "Gateway")
+                        .WithMany("Partner")
+                        .HasForeignKey("GatewayId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

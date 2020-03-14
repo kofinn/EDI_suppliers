@@ -21,9 +21,25 @@ namespace EDI_suppliers.Data
         [Required(ErrorMessage = "Hodnota musí být zadána")]
         public EdiType EdiType { get; set; }
         [Display(Name = "Gateway")]
-        public Boolean Gateway { get; set; }
+        public Boolean GatewayT { get; set; }
+        [Display(Name = "Jméno Gateway")]
+        public Gateway? Gateway { get; set; }
         [Display(Name = "SSID")]
-        public string SSID { get; set; }
+        public string SSID
+        {
+            //set
+            //{
+            //    if (this.Gateway != null)
+            //    {
+            //        this.SSID = Gateway.SSID;
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}   
+            get;set;
+        }
         [Display(Name = "SFID")]
         public string SFID { get; set; }
         [Display(Name = "Poznamka")]

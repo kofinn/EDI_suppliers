@@ -4,7 +4,8 @@
 
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject Services.IPartnerService Service
+@inject Services.IPartnerService PartnerService
+@inject Services.IGatewayService GatewayService
 
 <h2>Přehled EDI partnerů</h2>
 
@@ -16,6 +17,7 @@ else
     <DataGrid TItem="Partner"
               Data="@partners"
               Editable="true"
+              PageSize="999999"
               EditMode="DataGridEditMode.Inline"
               Filterable="true"
               RowInserted="@OnRowInserted"
@@ -41,19 +43,10 @@ else
                 <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
             </ClearFilterCommandTemplate>
         </DataGridCommandColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.EdiType)" Caption="Typ EDI spojení" Editable="true">
-            <EditTemplate>
-                <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="0">OFTP2</SelectItem>
-                    <SelectItem Value="1">ISDN</SelectItem>
-                </SelectEdit>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Gateway)" Caption="Gateway" Editable="true">
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.GatewayT)" Caption="Gateway" Editable="true">
             <DisplayTemplate>
                 @{
-                    var gateway = (context as Partner).Gateway;
+                    var gateway = (context as Partner).GatewayT;
 
                     if (gateway == false)
                     {
@@ -66,36 +59,49 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <SelectEdit TValue="bool" SelectedValue="@( (bool)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
                 </SelectEdit>
             </EditTemplate>
         </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true" />
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Gateway)" Caption="Jméno Gateway" Editable="@edit">
+            <DisplayTemplate>
+                @{
+                    var gateway = context.Gateway;
+
+                    if (gateway != null)
+                    {
+                        gateway = gateways.Where(x => x.GatewayId == gateway.GatewayId).FirstOrDefault();
+                        @($"{gateway.Name}");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <SelectEdit TValue="Gateway" SelectedValue="@( (Gateway)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    @{
+                        foreach (Gateway gate in gateways)
+                        {
+                             <SelectItem TValue="Gateway" Value="@gate">@gate.Name</SelectItem>
+                        }
+                    }
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.EdiType)" Caption="Typ EDI spojení" Editable="@edit">
+            <EditTemplate>
+                <SelectEdit TValue="int" SelectedValue="@( (int)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="0">OFTP2</SelectItem>
+                    <SelectItem Value="1">ISDN</SelectItem>
+                </SelectEdit>
+            </EditTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
+
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="@edit" />
         <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
         <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
     </DataGrid>
-
-
-    <Modal @ref="modalDelete">
-        <ModalBackdrop />
-        <ModalContent IsCentered="true">
-            <ModalHeader>
-                <ModalTitle>Vymazaní</ModalTitle>
-                <CloseButton Clicked="@HideModal" />
-            </ModalHeader>
-            <ModalBody>
-                <Field>
-                    <FieldLabel>Opravdu si přejete vymazat @partnerName</FieldLabel>
-                </Field>
-            </ModalBody>
-            <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Ne</Button>
-                <Button Color="Color.Primary" Clicked="@HideModal">Ano</Button>
-            </ModalFooter>
-        </ModalContent>
-    </Modal>
 
 }
 
@@ -106,44 +112,35 @@ else
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     List<Partner> partners;
+    List<Gateway> gateways;
     Partner partner { get; set; } = new Partner();
 
-    string partnerName;
+    bool edit= true;
 
-    // reference to the modal component
-    private Modal modalDelete;
 
-    private void ShowModal()
-    {
-        modalDelete.Show();
-    }
-
-    private void HideModal()
-    {
-        modalDelete.Hide();
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        partners = await Service.Get();
+        partners = await PartnerService.Get();
+        gateways = await GatewayService.Get();
     }
 
     void OnRowInserted(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
         var partner = e.Item;
-        Service.Add(partner);
+        PartnerService.Add(partner);
     }
 
     void OnRowUpdated(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
         var partner = e.Item;
-        Service.Update(partner);
+        PartnerService.Update(partner);
     }
 
     void OnRowRemoved(Partner partner)
     {
         //supplierName = supplier.Name;
         //modalDelete.Show();
-        Service.Delete(partner.PartnerId);
+        PartnerService.Delete(partner.PartnerId);
     }
 }

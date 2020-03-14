@@ -12,76 +12,62 @@
 
 <h2>Přehled spojení</h2>
 
-@if (connections == null)
-{
+@*<SelectList Data="@suppliers"
+            TextField="@((item)=>item.Name)"
+            SelectedValue="@selectedListValue"
+            SelectedValueChanged="@MyListValueChangedHandler">
+</SelectList>*@
 
-}
-else
-{
-<SelectEdit TValue="Supplier" SelectedValue="@supplier">
-    @{
-        foreach (Supplier sup in suppliers)
-        {
-            <SelectItem Value="@sup">@sup.MfgId</SelectItem>
-        }
+@{
+    if (suppliers != null)
+    {
+        <SelectEdit TValue="Supplier" SelectedValue="@supplier" SelectedValueChanged="@OnSelectedValue2">
+            @{
+                foreach (Supplier sup in suppliers)
+                {
+                    <SelectItem TValue="Supplier" Value="@sup">@sup.MfgId</SelectItem>
+                }
+            }
+        </SelectEdit>
     }
-</SelectEdit>
 }
+
+
 
 
     @code {
 
-        // AuthenticationState is available as a CascadingParameter
-        [CascadingParameter]
-        private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-        string partnerName;
-
-        // reference to the modal component
-        private Modal modalDelete;
-
-        List<Supplier> suppliers;
-        List<Partner> partners;
-        List<Connection> connections;
         Supplier supplier = new Supplier();
+        List<Supplier> suppliers;
 
 
         protected override async Task OnInitializedAsync()
         {
             suppliers = await SupplierService.Get();
-            partners = await PartnerService.Get();
-            connections = await ConnectionService.Get();
         }
 
 
 
-        private void ShowModal()
+        int innt;
+
+        void OnSelectedValue(int sup)
         {
-            modalDelete.Show();
+            innt = sup;
+            Console.WriteLine(innt);
         }
 
-        private void HideModal()
+        void OnSelectedValue2(Supplier sup)
         {
-            modalDelete.Hide();
+            supplier = sup;
+            Console.Write(supplier);
         }
 
+    int selectedListValue { get; set; }
 
-        void OnRowInserted(SavedRowItem<Connection, Dictionary<string, object>> e)
-        {
-            var connection = e.Item;
-            ConnectionService.Add(connection);
-        }
+    void MyListValueChangedHandler( int newValue )
+    {
+        selectedListValue = newValue;
+        StateHasChanged();
+    }
 
-        void OnRowUpdated(SavedRowItem<Connection, Dictionary<string, object>> e)
-        {
-            var connection = e.Item;
-            ConnectionService.Update(connection);
-        }
-
-        void OnRowRemoved(Connection connection)
-        {
-            //supplierName = supplier.Name;
-            //modalDelete.Show();
-            ConnectionService.Delete(connection.ConnectionId);
-        }
     }

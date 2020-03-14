@@ -87,6 +87,7 @@ namespace EDI_suppliers
             services.AddTransient<IConnectionService, ConnectionService>();
             services.AddTransient<ISupplierService, SupplierService>();
             services.AddTransient<IPartnerService, PartnerService>();
+            services.AddTransient<IGatewayService, GatewayService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

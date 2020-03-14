@@ -16,6 +16,8 @@ namespace EDI_suppliers.Data
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Connection> Connections { get; set; }
 
+        public DbSet<Gateway> Gateways { get; set; }
+
         public override int SaveChanges()
         {
             return base.SaveChanges();

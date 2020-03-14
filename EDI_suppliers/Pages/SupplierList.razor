@@ -16,6 +16,7 @@ else
     <DataGrid TItem="Supplier"
               Data="@suppliers"
               Editable="true"
+              PageSize="999999"
               EditMode="DataGridEditMode.Inline"
               Filterable="true"
               RowInserted="@OnRowInserted"
