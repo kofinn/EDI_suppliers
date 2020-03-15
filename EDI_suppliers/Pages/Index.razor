@@ -21,11 +21,11 @@
 @{
     if (suppliers != null)
     {
-        <SelectEdit TValue="Supplier" SelectedValue="@supplier" SelectedValueChanged="@OnSelectedValue2">
+        <SelectEdit TValue="int" SelectedValue="@innt" SelectedValueChanged="@OnSelectedValue2">
             @{
                 foreach (Supplier sup in suppliers)
                 {
-                    <SelectItem TValue="Supplier" Value="@sup">@sup.MfgId</SelectItem>
+                    <SelectItem TValue="int" Value="@sup.SupplierId">@sup.MfgId</SelectItem>
                 }
             }
         </SelectEdit>
@@ -56,18 +56,18 @@
             Console.WriteLine(innt);
         }
 
-        void OnSelectedValue2(Supplier sup)
+        void OnSelectedValue2(int sup)
         {
-            supplier = sup;
+            supplier = suppliers.Where(x => x.SupplierId == sup).FirstOrDefault();
             Console.Write(supplier);
         }
 
-    int selectedListValue { get; set; }
+        int selectedListValue { get; set; }
 
-    void MyListValueChangedHandler( int newValue )
-    {
-        selectedListValue = newValue;
-        StateHasChanged();
-    }
+        void MyListValueChangedHandler( int newValue )
+        {
+            selectedListValue = newValue;
+            StateHasChanged();
+        }
 
     }

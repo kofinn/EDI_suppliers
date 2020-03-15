@@ -55,26 +55,6 @@ else
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactIt)" Caption="Kontakt IT" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true"/>
     </DataGrid>
-
-
-    <Modal @ref="modalDelete">
-        <ModalBackdrop />
-        <ModalContent IsCentered="true">
-            <ModalHeader>
-                <ModalTitle>Vymazaní</ModalTitle>
-                <CloseButton Clicked="@HideModal" />
-            </ModalHeader>
-            <ModalBody>
-                <Field>
-                    <FieldLabel>Opravdu si přejete vymazat @supplierName</FieldLabel>
-                </Field>
-            </ModalBody>
-            <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Ne</Button>
-                <Button Color="Color.Primary" Clicked="@HideModal">Ano</Button>
-            </ModalFooter>
-        </ModalContent>
-    </Modal>
 }
 
 @code {
@@ -83,22 +63,9 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    // reference to the modal component
-    private Modal modalDelete;
-
-    private void ShowModal()
-    {
-        modalDelete.Show();
-    }
-
-    private void HideModal()
-    {
-        modalDelete.Hide();
-    }
 
     List<Supplier> suppliers;
     Supplier supplier { get; set; } = new Supplier();
-    string supplierName;
 
 
     protected override async Task OnInitializedAsync()

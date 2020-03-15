@@ -60,11 +60,22 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="Supplier" SelectedValue="@(( (Supplier)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                @{
+                    if(context.CellValue != null)
+                    {
+                        pkselectSup = ((Supplier)context.CellValue).SupplierId;
+                    }
+                }
+                <SelectEdit TValue="int" SelectedValue="@pkselectSup" SelectedValueChanged="@OnselectValueSup">
                     @{
                         foreach (Supplier sup in suppliers)
                         {
-                            <SelectItem TValue="Supplier" Value="@sup">@sup.MfgId</SelectItem>
+                            <SelectItem TValue="int" Value="@sup.SupplierId">@sup.MfgId</SelectItem>
+                        }
+
+                        if(supplier.SupplierId!=0)
+                        {
+                            context.CellValue = supplier;
                         }
                     }
                 </SelectEdit>
@@ -193,11 +204,28 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="Partner" SelectedValue="@(( (Partner)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                @{
+                    if (context.CellValue != null)
+                    {
+                        pkselectPar = ((Partner)context.CellValue).PartnerId;
+                    }
+                }
+                <SelectEdit TValue="int?" SelectedValue="@pkselectPar" SelectedValueChanged="@OnselectValuePar">
                     @{
+                        <SelectItem TValue="int?" Value="null"></SelectItem>
+
                         foreach (Partner par in partners)
                         {
-                            <SelectItem Value="@par">@par.Name</SelectItem>
+                            <SelectItem Value="@par.PartnerId">@par.Name</SelectItem>
+                        }
+
+                        if(partner.PartnerId!=0)
+                        {
+                            context.CellValue = partner;
+                        }
+                        if(pkselectPar==null)
+                        {
+                            context.CellValue = null;
                         }
                     }
                 </SelectEdit>
@@ -213,10 +241,6 @@ else
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    string partnerName;
-
-    // reference to the modal component
-    private Modal modalDelete;
 
     List<Supplier> suppliers;
     List<Partner> partners;
@@ -224,6 +248,10 @@ else
 
     Connection connection = new Connection();
     Supplier supplier = new Supplier();
+    Partner partner = new Partner();
+
+    int pkselectSup = 1;
+    int? pkselectPar = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -250,5 +278,26 @@ else
         //supplierName = supplier.Name;
         //modalDelete.Show();
         ConnectionService.Delete(connection.ConnectionId);
+    }
+
+    void OnselectValueSup(int pk)
+    {
+        supplier = suppliers.Where(x => x.SupplierId == pk).FirstOrDefault();
+
+        pkselectSup = pk;
+    }
+
+    void OnselectValuePar(int? pk)
+    {
+        if(pk!=null)
+        {
+            partner = partners.Where(x => x.PartnerId == pk).FirstOrDefault();
+        }
+        else
+        {
+            partner = new Partner();
+        }
+
+        pkselectPar = pk;
     }
 }

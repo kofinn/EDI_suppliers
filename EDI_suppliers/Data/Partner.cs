@@ -23,7 +23,7 @@ namespace EDI_suppliers.Data
         [Display(Name = "Gateway")]
         public Boolean GatewayT { get; set; }
         [Display(Name = "Jméno Gateway")]
-        public Gateway? Gateway { get; set; }
+        public Gateway Gateway { get; set; }
         [Display(Name = "SSID")]
         public string SSID
         {
