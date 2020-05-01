@@ -66,7 +66,7 @@ else
                         pkselectSup = ((Supplier)context.CellValue).SupplierId;
                     }
                 }
-                <SelectEdit TValue="int" SelectedValue="@pkselectSup" SelectedValueChanged="@OnselectValueSup">
+                <Select TValue="int" SelectedValue="@pkselectSup" SelectedValueChanged="@OnselectValueSup">
                     @{
                         foreach (Supplier sup in suppliers)
                         {
@@ -78,7 +78,7 @@ else
                             context.CellValue = supplier;
                         }
                     }
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Jméno" Editable="false">
@@ -110,10 +110,10 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Asn)" Caption="Dodací listy" Editable="true">
@@ -132,10 +132,10 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingMfg)" Caption="Nastavení MFG" Editable="true">
@@ -154,10 +154,10 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingEdi)" Caption="Nastavení EDI" Editable="true">
@@ -176,19 +176,19 @@ else
                 }
             </DisplayTemplate>
             <EditTemplate>
-                <SelectEdit TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Type)" Caption="Typ spojení" Editable="true">
             <EditTemplate>
-                <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="0">WebEDI</SelectItem>
                     <SelectItem Value="1">EDI</SelectItem>
                     <SelectItem Value="1">email</SelectItem>
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner)" Caption="EDI partner" Editable="true">
@@ -210,7 +210,7 @@ else
                         pkselectPar = ((Partner)context.CellValue).PartnerId;
                     }
                 }
-                <SelectEdit TValue="int?" SelectedValue="@pkselectPar" SelectedValueChanged="@OnselectValuePar">
+                <Select TValue="int?" SelectedValue="@pkselectPar" SelectedValueChanged="@OnselectValuePar">
                     @{
                         <SelectItem TValue="int?" Value="null"></SelectItem>
 
@@ -228,7 +228,7 @@ else
                             context.CellValue = null;
                         }
                     }
-                </SelectEdit>
+                </Select>
             </EditTemplate>
         </DataGridColumn>
     </DataGrid>

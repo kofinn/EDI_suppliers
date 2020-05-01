@@ -51,10 +51,10 @@ else
             <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.SSID)" Caption="SSID" Editable="true" />
             <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.EdiType)" Caption="Typ EDI spojení" Editable="true">
                 <EditTemplate>
-                    <SelectEdit TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                         <SelectItem Value="0">OFTP2</SelectItem>
                         <SelectItem Value="1">ISDN</SelectItem>
-                    </SelectEdit>
+                    </Select>
                 </EditTemplate>
             </DataGridColumn>
         </ChildContent>
