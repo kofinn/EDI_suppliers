@@ -1,41 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<MatAppBarContainer>
-    <MatAppBar Fixed="true">
-        <MatAppBarRow>
-            <MatAppBarSection>
-                <MatIconButton OnClick="@((e) => ButtonClicked())" Icon="menu"></MatIconButton>
-                <MatAppBarTitle>EDI Dodavatele</MatAppBarTitle>
-            </MatAppBarSection>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                @*<LoginDisplay />*@
-            </MatAppBarSection>
-        </MatAppBarRow>
-    </MatAppBar>
-    <MatAppBarContent>
-    </MatAppBarContent>
-</MatAppBarContainer>
-
-<MatDrawerContainer Style="width: 90vw; height: 90vh;">
-    <MatHidden Breakpoint="@MatBreakpoint.SM" Direction="@MatHiddenDirection.Up">
-        <ChildContent>
-            <MatDrawer @bind-Opened="@Opened" Mode="@MatDrawerMode.Modal">
-                <NavMenu />
-            </MatDrawer>
-        </ChildContent>
-
-        <ElseContent>
-            <MatDrawer @bind-Opened="@Opened" Mode="@MatDrawerMode.Dismissible">
-                <NavMenu />
-            </MatDrawer>
-        </ElseContent>
-    </MatHidden>
-
-    <MatDrawerContent>
-        @Body
-    </MatDrawerContent>
-</MatDrawerContainer>
-
+<Layout Sider="true">
+    <LayoutSider>
+        <LayoutSiderContent>
+            <SideMenu />
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed="true">
+            <Header />
+        </LayoutHeader>
+        <LayoutContent>
+            @Body
+        </LayoutContent>
+    </Layout>
+</Layout>
 
 @code
 {
