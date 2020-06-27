@@ -50,6 +50,28 @@ else
                 </Select>
             </EditTemplate>
         </DataGridColumn>
+                <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Active)" Caption="Aktivní" Editable="true">
+            <DisplayTemplate>
+                @{
+                    var active = (context as Supplier).Active;
+
+                    if (active == false)
+                    {
+                        @("NE");
+                    }
+                    else if (active == true)
+                    {
+                        @("ANO");
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <Select TValue="bool" SelectedValue="@( (bool)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                    <SelectItem Value="true">ANO</SelectItem>
+                    <SelectItem Value="false">NE</SelectItem>
+                </Select>
+            </EditTemplate>
+        </DataGridColumn>
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.MfgId)" Caption="Dodavatelské číslo" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Name)" Caption="Jméno dodavatele" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactIt)" Caption="Kontakt IT" Editable="true" />

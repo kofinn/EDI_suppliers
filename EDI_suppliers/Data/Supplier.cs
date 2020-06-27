@@ -15,6 +15,9 @@ namespace EDI_suppliers.Data
         [Key]
         public int SupplierId { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
+        [Display(Name = "Aktivní")]
+        public bool Active { get; set; }
+        [Required(ErrorMessage = "Hodnota musí být zadána")]
         [Display(Name = "Závod")]
         public Plant Plant { get; set; }
         [Required(ErrorMessage = "Hodnota musí být zadána")]
