@@ -62,6 +62,13 @@ else
                 <Select TValue="bool" SelectedValue="@( (bool)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="true">ANO</SelectItem>
                     <SelectItem Value="false">NE</SelectItem>
+                    @{ 
+                        selectGWdisable = !(bool)((CellEditContext)context).CellValue;
+                        if((bool)((CellEditContext)context).CellValue==false)
+                        {
+                            pkselectGw = null;
+                        }                        
+                    }
                 </Select>
             </EditTemplate>
         </DataGridColumn>
@@ -84,7 +91,7 @@ else
                         pkselectGw = ((Gateway)context.CellValue).GatewayId;
                     }
                 }
-                <Select TValue="int?" SelectedValue="@pkselectGw" SelectedValueChanged="@OnselectValueGw">
+                <Select TValue="int?" Disabled="@selectGWdisable" SelectedValue="@pkselectGw" SelectedValueChanged="@OnselectValueGw">
                     @{
                         <SelectItem TValue="int?" Value="null"></SelectItem>
 
@@ -93,7 +100,7 @@ else
                             <SelectItem TValue="int?" Value="@gate.GatewayId">@gate.Name</SelectItem>
                         }
 
-                        if(gateway.GatewayId!=0)
+                        if (gateway.GatewayId!=0)
                         {
                             context.CellValue = gateway;
                         }
@@ -114,8 +121,23 @@ else
             </EditTemplate>
         </DataGridColumn>
         <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
+        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true">
+            <EditTemplate>
+                @{
+                    if(context.CellValue != null)
+                    {
+                        SSID = context.CellValue.ToString();
+                    }
 
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true" />
+                    if(selectGWdisable==false)
+                    {
+                        SSID = gateway.SSID;
+                        context.CellValue = SSID;
+                    }
+                }
+                <TextEdit Disabled="@(!selectGWdisable)" Text="@SSID" TextChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)" />
+            </EditTemplate>
+        </DataGridColumn>
         <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
         <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
     </DataGrid>
@@ -133,7 +155,9 @@ else
     Partner partner { get; set; } = new Partner();
     Gateway gateway { get; set; } = new Gateway();
 
-    int? pkselectGw = 1;
+    int? pkselectGw;
+    bool selectGWdisable= true;
+    string SSID;
 
 
 
@@ -172,5 +196,10 @@ else
         }
 
         pkselectGw = pk;
+    }
+
+    void TextSSIDChanged()
+    {
+
     }
 }

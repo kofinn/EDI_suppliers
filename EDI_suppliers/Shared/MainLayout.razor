@@ -1,6 +1,39 @@
 ﻿@inherits LayoutComponentBase
 
-<Layout Sider="true">
+    <Layout Sider="true">
+        <LayoutSider>
+            <LayoutSiderContent>
+                <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark" Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" @bind-Visible="siderVisible">
+                    <BarBrand>
+                        <BarItem>
+                            <BarLink To="">
+                                <BarIcon IconName="IconName.Dashboard" />
+                                Blazorise Demo
+                            </BarLink>
+                        </BarItem>
+                    </BarBrand>
+                    <BarMenu>
+                        <BarStart>
+                            <BarLabel>Main</BarLabel>
+                            <BarItem>
+                                <BarLink To="">
+                                    <BarIcon IconName="IconName.Dashboard" />
+                                    Dashboard
+                                </BarLink>
+                            </BarItem>
+                        </BarStart>
+                    </BarMenu>
+                </Bar>
+            </LayoutSiderContent>
+        </LayoutSider>
+        <Layout>
+            <LayoutContent>
+                @Body
+            </LayoutContent>
+        </Layout>
+    </Layout>
+
+@*<Layout Sider="true">
     <LayoutSider>
         <LayoutSiderContent>
             <Sidebar @ref="sidebar">
@@ -11,12 +44,7 @@
                     <SidebarNavigation>
                         <SidebarItem>
                             <SidebarLink To="" Title="Home">
-                                <Icon Name="IconName.Tint" Margin="Margin.Is3.FromRight" />Home
-                            </SidebarLink>
-                        </SidebarItem>
-                        <SidebarItem>
-                            <SidebarLink To="/ConnectionList" Title="Přehled spojení">
-                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled spojení
+                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Home
                             </SidebarLink>
                         </SidebarItem>
                         <SidebarItem>
@@ -26,12 +54,12 @@
                         </SidebarItem>
                         <SidebarItem>
                             <SidebarLink To="/PartnerList" Title="Přehled EDI partnerů">
-                                <Icon Name="IconName.Tint" Margin="Margin.Is3.FromRight" />Přehled EDI partnerů
+                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled EDI partnerů
                             </SidebarLink>
                         </SidebarItem>
                         <SidebarItem>
                             <SidebarLink To="/SupplierList" Title="Přehled MFG Dodavatelů">
-                                <Icon Name="IconName.Tint" Margin="Margin.Is3.FromRight" />Přehled MFG Dodavatelů
+                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled MFG Dodavatelů
                             </SidebarLink>
                         </SidebarItem>
                     </SidebarNavigation>
@@ -60,15 +88,16 @@
             @Body
         </LayoutContent>
     </Layout>
-</Layout>
+</Layout>*@
 
 @code
 {
-    Sidebar sidebar;
+    private bool siderVisible = true;
 
     void ToggleSidebar()
     {
-        sidebar.Toggle();
+        siderVisible = !siderVisible;
+        StateHasChanged();
     }
 
 }
