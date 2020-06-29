@@ -1,103 +1,75 @@
 ﻿@inherits LayoutComponentBase
 
-    <Layout Sider="true">
-        <LayoutSider>
-            <LayoutSiderContent>
-                <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark" Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" @bind-Visible="siderVisible">
-                    <BarBrand>
-                        <BarItem>
-                            <BarLink To="">
-                                <BarIcon IconName="IconName.Dashboard" />
-                                Blazorise Demo
-                            </BarLink>
-                        </BarItem>
-                    </BarBrand>
-                    <BarMenu>
-                        <BarStart>
-                            <BarLabel>Main</BarLabel>
-                            <BarItem>
-                                <BarLink To="">
-                                    <BarIcon IconName="IconName.Dashboard" />
-                                    Dashboard
-                                </BarLink>
-                            </BarItem>
-                        </BarStart>
-                    </BarMenu>
-                </Bar>
-            </LayoutSiderContent>
-        </LayoutSider>
-        <Layout>
-            <LayoutContent>
-                @Body
-            </LayoutContent>
-        </Layout>
-    </Layout>
-
-@*<Layout Sider="true">
+<Layout Sider="true">
     <LayoutSider>
         <LayoutSiderContent>
-            <Sidebar @ref="sidebar">
-                <SidebarContent>
-                    <SidebarBrand>
-                        <a href="">EDI</a>
-                    </SidebarBrand>
-                    <SidebarNavigation>
-                        <SidebarItem>
-                            <SidebarLink To="" Title="Home">
-                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Home
-                            </SidebarLink>
-                        </SidebarItem>
-                        <SidebarItem>
-                            <SidebarLink To="/GatewayList" Title="Přehled EDI Gateway">
-                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled EDI Gateway
-                            </SidebarLink>
-                        </SidebarItem>
-                        <SidebarItem>
-                            <SidebarLink To="/PartnerList" Title="Přehled EDI partnerů">
-                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled EDI partnerů
-                            </SidebarLink>
-                        </SidebarItem>
-                        <SidebarItem>
-                            <SidebarLink To="/SupplierList" Title="Přehled MFG Dodavatelů">
-                                <Icon Name="IconName.Dashboard" Margin="Margin.Is3.FromRight" />Přehled MFG Dodavatelů
-                            </SidebarLink>
-                        </SidebarItem>
-                    </SidebarNavigation>
-                </SidebarContent>
-            </Sidebar>
-        </LayoutSiderContent>
-    </LayoutSider>
-    <Layout>
-        <LayoutHeader Fixed="true">
-            <Bar Style="height: 64px;" Breakpoint="Breakpoint.Desktop" Background="Background.Dark" ThemeContrast="ThemeContrast.Light">
-                <BarToggler Clicked="@ToggleSidebar">
-                </BarToggler>
+            <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark" Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" @bind-Visible="siderVisible">
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="">
+                            <BarIcon IconName="IconName.Server" />
+                            EDI Přehled
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
                 <BarMenu>
                     <BarStart>
                         <BarItem>
-                            <BarLink To="https://blazorise.com/">Home</BarLink>
+                            <BarLink To="">
+                                <BarIcon IconName="IconName.Dashboard" />
+                                Dashboard
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="/SupplierList">
+                                <BarIcon IconName="IconName.Truck" />
+                                Dodavatelé
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarDropdown>
+                                <BarDropdownToggle>
+                                    <BarIcon IconName="IconName.Tv" />
+                                    EDI
+                                </BarDropdownToggle>
+                                <BarDropdownMenu>
+                                    <BarDropdownItem To="/GatewayList">
+                                        <BarIcon IconName="IconName.Ethernet" />
+                                        Gateway
+                                    </BarDropdownItem>
+                                    <BarDropdownItem To="/PartnerList">
+                                        <BarIcon IconName="IconName.Compass" />
+                                        Spojení
+                                    </BarDropdownItem>
+                                </BarDropdownMenu>
+                            </BarDropdown>
                         </BarItem>
                     </BarStart>
                     <BarEnd>
-
+                        <BarItem>
+                            <LoginDisplay />
+                        </BarItem>
                     </BarEnd>
                 </BarMenu>
             </Bar>
-        </LayoutHeader>
-        <LayoutContent>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutContent Padding="Padding.Is4.OnX">
             @Body
         </LayoutContent>
     </Layout>
-</Layout>*@
+</Layout>
 
-@code
-{
+@code{
+
     private bool siderVisible = true;
+
+    RenderFragment customIcon =@<img src="/brand-logo.png" style="width:32px; height: 32px" />;
 
     void ToggleSidebar()
     {
         siderVisible = !siderVisible;
         StateHasChanged();
     }
-
 }
