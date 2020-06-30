@@ -1,8 +1,5 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/connectionlist"
-
-
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Services.IConnectionService ConnectionService
@@ -24,26 +21,29 @@ else
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
               RowRemoved="@OnRowRemoved">
-        <DataGridCommandColumn TItem="Connection">
-            <NewCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-            </NewCommandTemplate>
-            <EditCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
-            </EditCommandTemplate>
-            <SaveCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
-            </SaveCommandTemplate>
-            <CancelCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
-            </CancelCommandTemplate>
-            <DeleteCommandTemplate>
-                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
-            </DeleteCommandTemplate>
-            <ClearFilterCommandTemplate>
-                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
-            </ClearFilterCommandTemplate>
-        </DataGridCommandColumn>
+        @if (autorizace == true)
+        {
+            <DataGridCommandColumn TItem="Connection">
+                <NewCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                </EditCommandTemplate>
+                <SaveCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                </SaveCommandTemplate>
+                <CancelCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                </CancelCommandTemplate>
+                <DeleteCommandTemplate>
+                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                </DeleteCommandTemplate>
+                <ClearFilterCommandTemplate>
+                    <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                </ClearFilterCommandTemplate>
+            </DataGridCommandColumn>
+        }
         <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Dodavatel" Editable="true">
             <DisplayTemplate>
                 @{
@@ -58,7 +58,7 @@ else
             </DisplayTemplate>
             <EditTemplate>
                 @{
-                    if(context.CellValue != null)
+                    if (context.CellValue != null)
                     {
                         pkselectSup = ((Supplier)context.CellValue).SupplierId;
                     }
@@ -70,7 +70,7 @@ else
                             <SelectItem TValue="int" Value="@sup.SupplierId">@sup.MfgId</SelectItem>
                         }
 
-                        if(supplier.SupplierId!=0)
+                        if (supplier.SupplierId != 0)
                         {
                             context.CellValue = supplier;
                         }
@@ -216,11 +216,11 @@ else
                             <SelectItem Value="@par.PartnerId">@par.Name</SelectItem>
                         }
 
-                        if(partner.PartnerId!=0)
+                        if (partner.PartnerId != 0)
                         {
                             context.CellValue = partner;
                         }
-                        if(pkselectPar==null)
+                        if (pkselectPar == null)
                         {
                             context.CellValue = null;
                         }
@@ -234,9 +234,8 @@ else
 
 @code {
 
-    // AuthenticationState is available as a CascadingParameter
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    [Parameter]
+    public bool autorizace { get; set; }
 
 
     List<Supplier> suppliers;

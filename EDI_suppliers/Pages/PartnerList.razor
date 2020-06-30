@@ -1,11 +1,10 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/partnerlist"
-
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Services.IPartnerService PartnerService
 @inject Services.IGatewayService GatewayService
+@inject Services.IConnectionService ConnectionService
 
 @if (partners == null)
 {
@@ -21,140 +20,158 @@ else
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
               RowRemoved="@OnRowRemoved">
-        <DataGridCommandColumn TItem="Partner">
-            <NewCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-            </NewCommandTemplate>
-            <EditCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
-            </EditCommandTemplate>
-            <SaveCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
-            </SaveCommandTemplate>
-            <CancelCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
-            </CancelCommandTemplate>
-            <DeleteCommandTemplate>
-                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
-            </DeleteCommandTemplate>
-            <ClearFilterCommandTemplate>
-                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
-            </ClearFilterCommandTemplate>
-        </DataGridCommandColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.GatewayT)" Caption="Gateway" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var gateway = (context as Partner).GatewayT;
-
-                    if (gateway == false)
-                    {
-                        @("NE");
-                    }
-                    else if (gateway == true)
-                    {
-                        @("ANO");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Select TValue="bool" SelectedValue="@( (bool)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="true">ANO</SelectItem>
-                    <SelectItem Value="false">NE</SelectItem>
-                    @{ 
-                        selectGWdisable = !(bool)((CellEditContext)context).CellValue;
-                        if((bool)((CellEditContext)context).CellValue==false)
-                        {
-                            pkselectGw = null;
-                        }                        
-                    }
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Gateway)" Caption="Jméno Gateway" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var gateway = context.Gateway;
-
-                    if (gateway != null)
-                    {
-                        gateway = gateways.Where(x => x.GatewayId == gateway.GatewayId).FirstOrDefault();
-                        @($"{gateway.Name}");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                @{
-                    if(context.CellValue!=null)
-                    {
-                        pkselectGw = ((Gateway)context.CellValue).GatewayId;
-                    }
-                }
-                <Select TValue="int?" Disabled="@selectGWdisable" SelectedValue="@pkselectGw" SelectedValueChanged="@OnselectValueGw">
+        <ChildContent>
+            @if (autorizace == true)
+            {
+                <DataGridCommandColumn TItem="Partner">
+                    <NewCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                    </EditCommandTemplate>
+                    <SaveCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                    </SaveCommandTemplate>
+                    <CancelCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                    </CancelCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                    </DeleteCommandTemplate>
+                    <ClearFilterCommandTemplate>
+                        <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                    </ClearFilterCommandTemplate>
+                </DataGridCommandColumn>
+            }
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.GatewayT)" Caption="Gateway" Editable="true">
+                <DisplayTemplate>
                     @{
-                        <SelectItem TValue="int?" Value="null"></SelectItem>
+                        var gateway = (context as Partner).GatewayT;
 
-                        foreach (Gateway gate in gateways)
+                        if (gateway == false)
                         {
-                            <SelectItem TValue="int?" Value="@gate.GatewayId">@gate.Name</SelectItem>
+                            @("NE");
                         }
-
-                        if (gateway.GatewayId!=0)
+                        else if (gateway == true)
                         {
-                            context.CellValue = gateway;
-                        }
-                        if(pkselectGw==null)
-                        {
-                            context.CellValue = null;
+                            @("ANO");
                         }
                     }
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.EdiType)" Caption="Typ EDI spojení" Editable="true">
-            <EditTemplate>
-                <Select TValue="int" SelectedValue="@( (int)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="0">OFTP2</SelectItem>
-                    <SelectItem Value="1">ISDN</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true">
-            <EditTemplate>
-                @{
-                    if(context.CellValue != null)
-                    {
-                        SSID = context.CellValue.ToString();
-                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Select TValue="bool" SelectedValue="@( (bool)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="true">ANO</SelectItem>
+                        <SelectItem Value="false">NE</SelectItem>
+                        @{
+                            selectGWdisable = !(bool)((CellEditContext)context).CellValue;
+                            if ((bool)((CellEditContext)context).CellValue == false)
+                            {
+                                pkselectGw = null;
+                            }
+                        }
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.Gateway)" Caption="Jméno Gateway" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var gateway = context.Gateway;
 
-                    if(selectGWdisable==false)
-                    {
-                        SSID = gateway.SSID;
-                        context.CellValue = SSID;
+                        if (gateway != null)
+                        {
+                            gateway = gateways.Where(x => x.GatewayId == gateway.GatewayId).FirstOrDefault();
+                            @($"{gateway.Name}");
+                        }
                     }
-                }
-                <TextEdit Disabled="@(!selectGWdisable)" Text="@SSID" TextChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)" />
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
-        <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
+                </DisplayTemplate>
+                <EditTemplate>
+                    @{
+                        if (context.CellValue != null)
+                        {
+                            pkselectGw = ((Gateway)context.CellValue).GatewayId;
+                        }
+                    }
+                    <Select TValue="int?" Disabled="@selectGWdisable" SelectedValue="@pkselectGw" SelectedValueChanged="@OnselectValueGw">
+                        @{
+                            <SelectItem TValue="int?" Value="null"></SelectItem>
+
+                            foreach (Gateway gate in gateways)
+                            {
+                                <SelectItem TValue="int?" Value="@gate.GatewayId">@gate.Name</SelectItem>
+                            }
+
+                            if (gateway.GatewayId != 0)
+                            {
+                                context.CellValue = gateway;
+                            }
+                            if (pkselectGw == null)
+                            {
+                                context.CellValue = null;
+                            }
+                        }
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.EdiType)" Caption="Typ EDI spojení" Editable="true">
+                <EditTemplate>
+                    <Select TValue="int" SelectedValue="@( (int)( (CellEditContext)context ).CellValue )" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="0">OFTP2</SelectItem>
+                        <SelectItem Value="1">ISDN</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jmeno EDI partnera" Editable="true" />
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.SSID)" Caption="SSID" Editable="true">
+                <EditTemplate>
+                    @{
+                        if (context.CellValue != null)
+                        {
+                            SSID = context.CellValue.ToString();
+                        }
+
+                        if (selectGWdisable == false)
+                        {
+                            SSID = gateway.SSID;
+                            context.CellValue = SSID;
+                        }
+                    }
+                    <TextEdit Disabled="@(!selectGWdisable)" Text="@SSID" TextChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)" />
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
+        </ChildContent>
+        @*<DetailRowTemplate>
+            @{
+                var supplier = (context as Partner).Connections;
+
+                <DataGrid TItem="Connection"
+                          Data="connections"
+                          Sortable="false">
+                    <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="Jméno dodavatele" />
+                    <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier.Name)" Caption="Číslo dodavatele" />
+                </DataGrid>
+            }
+        </DetailRowTemplate>*@
     </DataGrid>
 
 }
 
 @code {
 
-    // AuthenticationState is available as a CascadingParameter
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    [Parameter]
+    public bool autorizace { get; set; }
 
     List<Partner> partners;
     List<Gateway> gateways;
+    List<Connection> connections;
+
     Partner partner { get; set; } = new Partner();
     Gateway gateway { get; set; } = new Gateway();
 
     int? pkselectGw;
-    bool selectGWdisable= true;
+    bool selectGWdisable = true;
     string SSID;
 
 
@@ -163,6 +180,7 @@ else
     {
         partners = await PartnerService.Get();
         gateways = await GatewayService.Get();
+        connections = await ConnectionService.Get();
     }
 
     void OnRowInserted(SavedRowItem<Partner, Dictionary<string, object>> e)
@@ -184,7 +202,7 @@ else
 
     void OnselectValueGw(int? pk)
     {
-        if(pk!=null)
+        if (pk != null)
         {
             gateway = gateways.Where(x => x.GatewayId == pk).FirstOrDefault();
         }

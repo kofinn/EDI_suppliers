@@ -1,7 +1,5 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/supplierlist"
-
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Services.ISupplierService Service
@@ -19,36 +17,39 @@ else
               Filterable="true"
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
-              RowRemoved="@OnRowRemoved">              
-        <DataGridCommandColumn TItem="Supplier">
-            <NewCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-            </NewCommandTemplate>
-            <EditCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
-            </EditCommandTemplate>
-            <SaveCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
-            </SaveCommandTemplate>
-            <CancelCommandTemplate>
-                <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
-            </CancelCommandTemplate>
-            <DeleteCommandTemplate>
-                <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
-            </DeleteCommandTemplate>
-            <ClearFilterCommandTemplate>
-                <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
-            </ClearFilterCommandTemplate>
-        </DataGridCommandColumn>
+              RowRemoved="@OnRowRemoved">
+        @if (autorizace == true)
+        {
+            <DataGridCommandColumn TItem="Supplier">
+                <NewCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                </EditCommandTemplate>
+                <SaveCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                </SaveCommandTemplate>
+                <CancelCommandTemplate>
+                    <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                </CancelCommandTemplate>
+                <DeleteCommandTemplate>
+                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                </DeleteCommandTemplate>
+                <ClearFilterCommandTemplate>
+                    <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                </ClearFilterCommandTemplate>
+            </DataGridCommandColumn>
+        }
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Plant)" Caption="Závod" Editable="true">
             <EditTemplate>
                 <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                        <SelectItem Value="0">P1</SelectItem>
-                        <SelectItem Value="1">P2</SelectItem>
+                    <SelectItem Value="0">P1</SelectItem>
+                    <SelectItem Value="1">P2</SelectItem>
                 </Select>
             </EditTemplate>
         </DataGridColumn>
-                <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Active)" Caption="Aktivní" Editable="true">
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Active)" Caption="Aktivní" Editable="true">
             <DisplayTemplate>
                 @{
                     var active = (context as Supplier).Active;
@@ -73,15 +74,14 @@ else
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.MfgId)" Caption="Dodavatelské číslo" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.Name)" Caption="Jméno dodavatele" Editable="true" />
         <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactIt)" Caption="Kontakt IT" Editable="true" />
-        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true"/>
+        <DataGridColumn TItem="Supplier" Field="@nameof(Supplier.ContactLog)" Caption="Kontakt LOG" Editable="true" />
     </DataGrid>
 }
 
 @code {
 
-    // AuthenticationState is available as a CascadingParameter
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    [Parameter]
+    public bool autorizace { get; set; }
 
 
     List<Supplier> suppliers;

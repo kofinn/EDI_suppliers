@@ -1,7 +1,5 @@
 ﻿@using EDI_suppliers.Data
 
-@page "/gatewaylist"
-
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Services.IPartnerService PartnerService
@@ -22,29 +20,31 @@ else
               RowUpdated="@OnRowUpdated"
               RowRemoved="@OnRowRemoved"
               @bind-SelectedRow="@selectedGateway"
-              DetailRowTrigger="@((item)=>item.Partner?.Count > 0 && item.GatewayId == selectedGateway?.GatewayId)"
-              >
+              DetailRowTrigger="@((item)=>item.Partner?.Count > 0 && item.GatewayId == selectedGateway?.GatewayId)">
         <ChildContent>
-            <DataGridCommandColumn TItem="Gateway">
-                <NewCommandTemplate>
-                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-                </NewCommandTemplate>
-                <EditCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
-                </EditCommandTemplate>
-                <SaveCommandTemplate>
-                    <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
-                </SaveCommandTemplate>
-                <CancelCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
-                </CancelCommandTemplate>
-                <DeleteCommandTemplate>
-                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
-                </DeleteCommandTemplate>
-                <ClearFilterCommandTemplate>
-                    <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
-                </ClearFilterCommandTemplate>
-            </DataGridCommandColumn>
+            @if (autorizace == true)
+            {
+                <DataGridCommandColumn TItem="Gateway">
+                    <NewCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                    </EditCommandTemplate>
+                    <SaveCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                    </SaveCommandTemplate>
+                    <CancelCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                    </CancelCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                    </DeleteCommandTemplate>
+                    <ClearFilterCommandTemplate>
+                        <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                    </ClearFilterCommandTemplate>
+                </DataGridCommandColumn>
+            }
             <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.Name)" Caption="Jmeno Gateway" Editable="true" />
             <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.SSID)" Caption="SSID" Editable="true" />
             <DataGridColumn TItem="Gateway" Field="@nameof(Gateway.EdiType)" Caption="Typ EDI spojení" Editable="true">
@@ -73,9 +73,8 @@ else
 
 @code {
 
-    // AuthenticationState is available as a CascadingParameter
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    [Parameter]
+    public bool autorizace { get; set; }
 
     List<Gateway> gateways;
     List<Partner> partners;

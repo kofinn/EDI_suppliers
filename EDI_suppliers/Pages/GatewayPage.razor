@@ -1,0 +1,21 @@
+﻿@using EDI_suppliers.Data
+
+@page "/gateways"
+
+<AuthorizeView>
+    <Authorized>
+        <GatewayList autorizace="true"/>
+    </Authorized>
+    <NotAuthorized>
+        <GatewayList autorizace="false" />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+    // AuthenticationState is available as a CascadingParameter
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+}
