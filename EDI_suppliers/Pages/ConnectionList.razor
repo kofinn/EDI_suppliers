@@ -9,9 +9,6 @@
 @inject Services.ISupplierService SupplierService
 @inject Services.IPartnerService PartnerService
 
-
-<h2>Přehled spojení</h2>
-
 @if (connections == null)
 {
 
@@ -187,7 +184,7 @@ else
                 <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
                     <SelectItem Value="0">WebEDI</SelectItem>
                     <SelectItem Value="1">EDI</SelectItem>
-                    <SelectItem Value="1">email</SelectItem>
+                    <SelectItem Value="2">email</SelectItem>
                 </Select>
             </EditTemplate>
         </DataGridColumn>
