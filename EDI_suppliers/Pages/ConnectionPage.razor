@@ -2,7 +2,7 @@
 
 @page "/connections"
 
-<AuthorizeView>
+<AuthorizeView Roles="admin">
     <Authorized>
         <ConnectionList autorizace="true"/>
     </Authorized>

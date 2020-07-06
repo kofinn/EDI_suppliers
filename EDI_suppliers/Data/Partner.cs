@@ -44,6 +44,10 @@ namespace EDI_suppliers.Data
         public string SFID { get; set; }
         [Display(Name = "Poznamka")]
         public string Remark { get; set; }
+        [Display(Name = "Certifikat")]
+        public string Cert { get; set; }
+        [Display(Name = "Vypršení Certifikátu")]
+        public DateTime CertDate { get; set; }
         public ICollection<Connection> Connections { get; set; }
     }
 }

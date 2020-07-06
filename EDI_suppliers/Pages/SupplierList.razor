@@ -107,8 +107,6 @@ else
 
     void OnRowRemoved(Supplier supplier)
     {
-        //supplierName = supplier.Name;
-        //modalDelete.Show();
         Service.Delete(supplier.SupplierId);
     }
 }

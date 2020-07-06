@@ -2,7 +2,7 @@
 
 @page "/suppliers"
 
-<AuthorizeView>
+<AuthorizeView Roles="admin">
     <Authorized>
         <SupplierList autorizace="true"/>
     </Authorized>

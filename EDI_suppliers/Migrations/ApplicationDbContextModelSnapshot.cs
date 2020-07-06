@@ -84,6 +84,12 @@ namespace EDI_suppliers.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Cert")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CertDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EdiType")
                         .HasColumnType("int");
 
