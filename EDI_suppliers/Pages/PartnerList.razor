@@ -146,22 +146,30 @@ else
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Cert)" Caption="Certifikát" Editable="true">
                 <EditTemplate>
                     <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">Certifikat</FileEdit>"
+                    @{
+                        context.CellValue = path;
+                    }
                 </EditTemplate>
             </DataGridColumn>
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
         </ChildContent>
+        <EmptyTemplate>
+            <div class="box">
+                Nenalezení žádní EDI partneři
+            </div>
+        </EmptyTemplate>
         @*<DetailRowTemplate>
-                @{
-                    var supplier = (context as Partner).Connections;
+            @{
+                var supplier = (context as Partner).Connections;
 
-                    <DataGrid TItem="Connection"
-                              Data="connections"
-                              Sortable="false">
-                        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="Jméno dodavatele" />
-                        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier.Name)" Caption="Číslo dodavatele" />
-                    </DataGrid>
-                }
-            </DetailRowTemplate>*@
+                <DataGrid TItem="Connection"
+                          Data="connections"
+                          Sortable="false">
+                    <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="Jméno dodavatele" />
+                    <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier.Name)" Caption="Číslo dodavatele" />
+                </DataGrid>
+            }
+        </DetailRowTemplate>*@
     </DataGrid>
 
 
@@ -213,6 +221,7 @@ else
     Snackbar snackbarError;
     Snackbar snackbarSuccess;
     Snackbar snackbarCer;
+    string path;
 
     protected override async Task OnInitializedAsync()
     {
@@ -288,7 +297,7 @@ else
                         supp.Create();
                     }
 
-                    string path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
+                    path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
 
                     using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
                     {

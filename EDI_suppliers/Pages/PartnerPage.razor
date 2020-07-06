@@ -2,12 +2,12 @@
 
 @page "/partners"
 
-<AuthorizeView Roles="admin">
+<AuthorizeView>
     <Authorized>
         <PartnerList autorizace="true"/>
     </Authorized>
     <NotAuthorized>
-        <PartnerList autorizace="false" />
+        <PartnerList autorizace="true" />
     </NotAuthorized>
 </AuthorizeView>
 
