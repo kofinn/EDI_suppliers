@@ -82,6 +82,7 @@
                     }
 
                     string path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
+                    string fileName = file.Name;
 
                     using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
                     {

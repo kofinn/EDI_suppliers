@@ -145,7 +145,7 @@ else
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Cert)" Caption="Certifikát" Editable="true">
                 <EditTemplate>
-                    <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">Certifikat</FileEdit>"
+                    <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">@fileName</FileEdit>"
                     @{
                         context.CellValue = path;
                     }
@@ -155,7 +155,7 @@ else
         </ChildContent>
         <EmptyTemplate>
             <div class="box">
-                Nenalezení žádní EDI partneři
+                Nenalezení žádné záznamy
             </div>
         </EmptyTemplate>
         @*<DetailRowTemplate>
@@ -216,12 +216,25 @@ else
     int? pkselectGw;
     bool selectGWdisable = true;
     string SSID;
+    string pathCert = @"E:\Cert";
+    string path;
+    string fileName = "Certifikat";
 
     Snackbar snackbarLoad;
     Snackbar snackbarError;
     Snackbar snackbarSuccess;
     Snackbar snackbarCer;
-    string path;
+
+    /// <summary>
+    /// Funkce pro resetnutí promněných po úpravě záznamu v Gridu
+    /// </summary>
+    void ResetState()
+    {
+        pkselectGw = null;
+        selectGWdisable = true;
+        SSID = null;
+        fileName = "Certifikat";
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -234,17 +247,20 @@ else
     {
         var partner = e.Item;
         PartnerService.Add(partner);
+        ResetState();
     }
 
     void OnRowUpdated(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
         var partner = e.Item;
         PartnerService.Update(partner);
+        ResetState();
     }
 
     void OnRowRemoved(Partner partner)
     {
         PartnerService.Delete(partner.PartnerId);
+        ResetState();
     }
 
     void OnselectValueGw(int? pk)
@@ -261,15 +277,9 @@ else
         pkselectGw = pk;
     }
 
-    void TextSSIDChanged()
-    {
-
-    }
-
     async Task OnChanged(FileChangedEventArgs e)
     {
         string mfgId = "50015";
-        string pathCert = @"E:\Cert";
 
         try
         {
@@ -298,6 +308,7 @@ else
                     }
 
                     path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
+                    fileName = file.Name;
 
                     using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
                     {

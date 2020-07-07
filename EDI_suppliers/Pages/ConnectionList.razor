@@ -21,213 +21,220 @@ else
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
               RowRemoved="@OnRowRemoved">
-        @if (autorizace == true)
-        {
-            <DataGridCommandColumn TItem="Connection">
-                <NewCommandTemplate>
-                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-                </NewCommandTemplate>
-                <EditCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
-                </EditCommandTemplate>
-                <SaveCommandTemplate>
-                    <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
-                </SaveCommandTemplate>
-                <CancelCommandTemplate>
-                    <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
-                </CancelCommandTemplate>
-                <DeleteCommandTemplate>
-                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
-                </DeleteCommandTemplate>
-                <ClearFilterCommandTemplate>
-                    <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
-                </ClearFilterCommandTemplate>
-            </DataGridCommandColumn>
-        }
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Dodavatel" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var supplier = context.Supplier;
-
-                    if (supplier != null)
-                    {
-                        supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
-                        @($"{supplier.MfgId}");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                @{
-                    if (context.CellValue != null)
-                    {
-                        pkselectSup = ((Supplier)context.CellValue).SupplierId;
-                    }
-                }
-                <Select TValue="int" SelectedValue="@pkselectSup" SelectedValueChanged="@OnselectValueSup">
+        <ChildContent>
+            @if (autorizace == true)
+            {
+                <DataGridCommandColumn TItem="Connection">
+                    <NewCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Edit</Button>
+                    </EditCommandTemplate>
+                    <SaveCommandTemplate>
+                        <Button Color="Color.Success" Clicked="@context.Clicked">Save</Button>
+                    </SaveCommandTemplate>
+                    <CancelCommandTemplate>
+                        <Button Color="Color.Warning" Clicked="@context.Clicked">Cancel</Button>
+                    </CancelCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                    </DeleteCommandTemplate>
+                    <ClearFilterCommandTemplate>
+                        <Button Color="Color.Info" Clicked="@context.Clicked">Clear Filter</Button>
+                    </ClearFilterCommandTemplate>
+                </DataGridCommandColumn>
+            }
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Dodavatel" Editable="true">
+                <DisplayTemplate>
                     @{
-                        foreach (Supplier sup in suppliers)
-                        {
-                            <SelectItem TValue="int" Value="@sup.SupplierId">@sup.MfgId</SelectItem>
-                        }
+                        var supplier = context.Supplier;
 
-                        if (supplier.SupplierId != 0)
+                        if (supplier != null)
                         {
-                            context.CellValue = supplier;
+                            supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
+                            @($"{supplier.MfgId}");
                         }
                     }
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Jméno" Editable="false">
-            <DisplayTemplate>
-                @{
-                    var supplier = context.Supplier;
-
-                    if (supplier != null)
-                    {
-                        supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
-                        @($"{supplier.Name}");
-                    }
-                }
-            </DisplayTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Calloff)" Caption="Odvolávky" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var calloff = (context as Connection).Calloff;
-
-                    if (calloff == false)
-                    {
-                        @("NE");
-                    }
-                    else if (calloff == true)
-                    {
-                        @("ANO");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="true">ANO</SelectItem>
-                    <SelectItem Value="false">NE</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Asn)" Caption="Dodací listy" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var asn = (context as Connection).Asn;
-
-                    if (asn == false)
-                    {
-                        @("NE");
-                    }
-                    else if (asn == true)
-                    {
-                        @("ANO");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="true">ANO</SelectItem>
-                    <SelectItem Value="false">NE</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingMfg)" Caption="Nastavení MFG" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var settingmfg = (context as Connection).SettingMfg;
-
-                    if (settingmfg == false)
-                    {
-                        @("NE");
-                    }
-                    else if (settingmfg == true)
-                    {
-                        @("ANO");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="true">ANO</SelectItem>
-                    <SelectItem Value="false">NE</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingEdi)" Caption="Nastavení EDI" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var settingedi = (context as Connection).SettingEdi;
-
-                    if (settingedi == false)
-                    {
-                        @("NE");
-                    }
-                    else if (settingedi == true)
-                    {
-                        @("ANO");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="true">ANO</SelectItem>
-                    <SelectItem Value="false">NE</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Type)" Caption="Typ spojení" Editable="true">
-            <EditTemplate>
-                <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
-                    <SelectItem Value="0">WebEDI</SelectItem>
-                    <SelectItem Value="1">EDI</SelectItem>
-                    <SelectItem Value="2">email</SelectItem>
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner)" Caption="EDI partner" Editable="true">
-            <DisplayTemplate>
-                @{
-                    var partner = context.Partner;
-
-                    if (partner != null)
-                    {
-                        partner = partners.Where(x => x.PartnerId == partner.PartnerId).FirstOrDefault();
-                        @($"{partner.Name}");
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                @{
-                    if (context.CellValue != null)
-                    {
-                        pkselectPar = ((Partner)context.CellValue).PartnerId;
-                    }
-                }
-                <Select TValue="int?" SelectedValue="@pkselectPar" SelectedValueChanged="@OnselectValuePar">
+                </DisplayTemplate>
+                <EditTemplate>
                     @{
-                        <SelectItem TValue="int?" Value="null"></SelectItem>
-
-                        foreach (Partner par in partners)
+                        if (context.CellValue != null)
                         {
-                            <SelectItem Value="@par.PartnerId">@par.Name</SelectItem>
-                        }
-
-                        if (partner.PartnerId != 0)
-                        {
-                            context.CellValue = partner;
-                        }
-                        if (pkselectPar == null)
-                        {
-                            context.CellValue = null;
+                            pkselectSup = ((Supplier)context.CellValue).SupplierId;
                         }
                     }
-                </Select>
-            </EditTemplate>
-        </DataGridColumn>
+                    <Select TValue="int" SelectedValue="@pkselectSup" SelectedValueChanged="@OnselectValueSup">
+                        @{
+                            foreach (Supplier sup in suppliers)
+                            {
+                                <SelectItem TValue="int" Value="@sup.SupplierId">@sup.MfgId</SelectItem>
+                            }
+
+                            if (supplier.SupplierId != 0)
+                            {
+                                context.CellValue = supplier;
+                            }
+                        }
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Supplier)" Caption="MFG Jméno" Editable="false">
+                <DisplayTemplate>
+                    @{
+                        var supplier = context.Supplier;
+
+                        if (supplier != null)
+                        {
+                            supplier = suppliers.Where(x => x.SupplierId == supplier.SupplierId).FirstOrDefault();
+                            @($"{supplier.Name}");
+                        }
+                    }
+                </DisplayTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Calloff)" Caption="Odvolávky" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var calloff = (context as Connection).Calloff;
+
+                        if (calloff == false)
+                        {
+                            @("NE");
+                        }
+                        else if (calloff == true)
+                        {
+                            @("ANO");
+                        }
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="true">ANO</SelectItem>
+                        <SelectItem Value="false">NE</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Asn)" Caption="Dodací listy" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var asn = (context as Connection).Asn;
+
+                        if (asn == false)
+                        {
+                            @("NE");
+                        }
+                        else if (asn == true)
+                        {
+                            @("ANO");
+                        }
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="true">ANO</SelectItem>
+                        <SelectItem Value="false">NE</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingMfg)" Caption="Nastavení MFG" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var settingmfg = (context as Connection).SettingMfg;
+
+                        if (settingmfg == false)
+                        {
+                            @("NE");
+                        }
+                        else if (settingmfg == true)
+                        {
+                            @("ANO");
+                        }
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="true">ANO</SelectItem>
+                        <SelectItem Value="false">NE</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.SettingEdi)" Caption="Nastavení EDI" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var settingedi = (context as Connection).SettingEdi;
+
+                        if (settingedi == false)
+                        {
+                            @("NE");
+                        }
+                        else if (settingedi == true)
+                        {
+                            @("ANO");
+                        }
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    <Select TValue="bool" SelectedValue="@(( (bool)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="true">ANO</SelectItem>
+                        <SelectItem Value="false">NE</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Type)" Caption="Typ spojení" Editable="true">
+                <EditTemplate>
+                    <Select TValue="int" SelectedValue="@(( (int)( (CellEditContext)context ).CellValue ))" SelectedValueChanged="@(( v ) => ( (CellEditContext)context ).CellValue = v)">
+                        <SelectItem Value="0">WebEDI</SelectItem>
+                        <SelectItem Value="1">EDI</SelectItem>
+                        <SelectItem Value="2">email</SelectItem>
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+            <DataGridColumn TItem="Connection" Field="@nameof(Connection.Partner)" Caption="EDI partner" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        var partner = context.Partner;
+
+                        if (partner != null)
+                        {
+                            partner = partners.Where(x => x.PartnerId == partner.PartnerId).FirstOrDefault();
+                            @($"{partner.Name}");
+                        }
+                    }
+                </DisplayTemplate>
+                <EditTemplate>
+                    @{
+                        if (context.CellValue != null)
+                        {
+                            pkselectPar = ((Partner)context.CellValue).PartnerId;
+                        }
+                    }
+                    <Select TValue="int?" SelectedValue="@pkselectPar" SelectedValueChanged="@OnselectValuePar">
+                        @{
+                            <SelectItem TValue="int?" Value="null"></SelectItem>
+
+                            foreach (Partner par in partners)
+                            {
+                                <SelectItem Value="@par.PartnerId">@par.Name</SelectItem>
+                            }
+
+                            if (partner.PartnerId != 0)
+                            {
+                                context.CellValue = partner;
+                            }
+                            if (pkselectPar == null)
+                            {
+                                context.CellValue = null;
+                            }
+                        }
+                    </Select>
+                </EditTemplate>
+            </DataGridColumn>
+        </ChildContent>
+        <EmptyTemplate>
+            <div class="box">
+                Nenalezení žádné záznamy
+            </div>
+        </EmptyTemplate>
     </DataGrid>
 }
 

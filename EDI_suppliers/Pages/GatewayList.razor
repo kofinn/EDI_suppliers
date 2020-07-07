@@ -57,17 +57,22 @@ else
             </DataGridColumn>
         </ChildContent>
         <DetailRowTemplate>
-            @{ 
+            @{
                 var partners = (context as Gateway).Partner;
 
                 <DataGrid TItem="Partner"
                           Data="partners"
                           Sortable="false">
-                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jméno EDI parnera"/>
-                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID"/>
+                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.Name)" Caption="Jméno EDI parnera" />
+                    <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" />
                 </DataGrid>
             }
         </DetailRowTemplate>
+        <EmptyTemplate>
+            <div class="box">
+                Nenalezení žádné záznamy
+            </div>
+        </EmptyTemplate>
     </DataGrid>
 }
 
