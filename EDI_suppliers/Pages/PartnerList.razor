@@ -22,7 +22,8 @@ else
               Filterable="true"
               RowInserted="@OnRowInserted"
               RowUpdated="@OnRowUpdated"
-              RowRemoved="@OnRowRemoved">
+              RowRemoved="@OnRowRemoved"
+              CustomFilter="@OnCustomFilter">
         <ChildContent>
             @if (autorizace == true)
             {
@@ -146,23 +147,27 @@ else
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Cert)" Caption="Certifikát" Editable="true">
                 <DisplayTemplate>
                     @{
-                        if (context.Cert.ToString() != null)
+                        if (context.Cert != null)
                         {
-                            string? link = context.Cert.ToString();
-                            <Blazorise.Link To="@link">
-                                Certifikát
-                            </Blazorise.Link>
+                            if (context.Cert.ToString() != null)
+                            {
+                                string? link = context.Cert.ToString();
+                                <Blazorise.Link To="@link">
+                                    Certifikát
+                                </Blazorise.Link>
+                            }
                         }
                     }
                 </DisplayTemplate>
                 <EditTemplate>
-                    <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">@fileName</FileEdit>"
+                    <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">@fileName</FileEdit>
                     @{
                         context.CellValue = path;
                     }
                 </EditTemplate>
             </DataGridColumn>
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Remark)" Caption="Poznámka" Editable="true" />
+            <DataGridColumn TItem="Partner" Field="@nameof(Partner.CertDate)" Caption="Platnost Certifikátu" Editable="false" />
         </ChildContent>
         <EmptyTemplate>
             <div class="box">
@@ -227,9 +232,10 @@ else
     int? pkselectGw;
     bool selectGWdisable = true;
     string SSID;
-    string pathCert = @"\Cert";
+    string pathCert = @"wwwroot\Cert";
     string path;
     string fileName = "Certifikat";
+    string customFilterValue;
 
     Snackbar snackbarLoad;
     Snackbar snackbarError;
@@ -245,6 +251,15 @@ else
         selectGWdisable = true;
         SSID = null;
         fileName = "Certifikat";
+    }
+
+    bool OnCustomFilter(Partner filtr)
+    {
+        if(string.IsNullOrEmpty(customFilterValue))
+        {
+            return true;
+        }
+        return true;
     }
 
     protected override async Task OnInitializedAsync()
@@ -265,7 +280,7 @@ else
         }
 
         //vytvoření slozky pro dodavateleID
-        DirectoryInfo supp = new DirectoryInfo(Path.Combine(partner.Name));
+        DirectoryInfo supp = new DirectoryInfo(Path.Combine(pathCert,partner.Name));
         if (!supp.Exists)
         {
             supp.Create();
