@@ -1,7 +1,6 @@
 ﻿@using EDI_suppliers.Data
 @using System.IO;
-@using System.Text;
-@using System.Security.Cryptography.X509Certificates;
+
 
 
 @page "/"
@@ -12,128 +11,11 @@
 @inject Services.IConnectionService ConnectionService
 @inject Services.ISupplierService SupplierService
 @inject Services.IPartnerService PartnerService
-@*<ConnectionPage/>*@
 
-<FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">Certifikat</FileEdit>
 
-<Snackbar @ref="snackbarLoad" Color="SnackbarColor.Primary" Location="SnackbarLocation.Right">
-    <SnackbarBody>
-        Nahrávání souboru
-    </SnackbarBody>
-</Snackbar>
+<ConnectionPage/>
 
-<Snackbar @ref="snackbarError" Color="SnackbarColor.Danger" Location="SnackbarLocation.Right">
-    <SnackbarBody>
-        Chyba při nahrávání souboru
-    </SnackbarBody>
-    <SnackbarAction><SnackbarAction Clicked="@(()=>snackbarError.Hide())">OK</SnackbarAction></SnackbarAction>
-</Snackbar>
-
-<Snackbar @ref="snackbarSuccess" Color="SnackbarColor.Success" Location="SnackbarLocation.Right">
-    <SnackbarBody>
-        Soubor nahrán
-    </SnackbarBody>
-    <SnackbarAction><SnackbarAction Clicked="@(()=>snackbarSuccess.Hide())">OK</SnackbarAction></SnackbarAction>
-</Snackbar>
-
-<Snackbar @ref="snackbarCer" Color="SnackbarColor.Danger" Location="SnackbarLocation.Right">
-    <SnackbarBody>
-        Chyba certifikatu
-    </SnackbarBody>
-    <SnackbarAction><SnackbarAction Clicked="@(()=>snackbarCer.Hide())">OK</SnackbarAction></SnackbarAction>
-</Snackbar>
 
 @code{
 
-    Snackbar snackbarLoad;
-    Snackbar snackbarError;
-    Snackbar snackbarSuccess;
-    Snackbar snackbarCer;
-
-    async Task OnChanged(FileChangedEventArgs e)
-    {
-        string mfgId = "50015";
-        string pathCert = @"E:\Cert";
-
-        try
-        {
-            foreach (var file in e.Files)
-            {
-                // do stremu se uloží data z fileedit
-                using (var stream = new MemoryStream())
-                {
-                    // Here we're telling the FileEdit where to write the upload result
-                    await file.WriteToStreamAsync(stream);
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    //vytvořebí složky pokud neexistuje
-                    DirectoryInfo cert = new DirectoryInfo(pathCert);
-                    if (!cert.Exists)
-                    {
-                        cert.Create();
-                    }
-
-                    //vytvoření slozky pro dodavateleID
-                    DirectoryInfo supp = new DirectoryInfo(Path.Combine(pathCert, mfgId));
-                    if (!supp.Exists)
-                    {
-                        supp.Create();
-                    }
-
-                    string path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
-                    string fileName = file.Name;
-
-                    using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
-                    {
-                        stream.CopyTo(outputFileStream);
-                        outputFileStream.Close();
-
-                        //Nacteni certifikatu
-                        try
-                        {
-                            X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
-                            DateTime results = DateTime.Parse(certificate.GetExpirationDateString());
-                        }
-
-                        catch (Exception exc)
-                        {
-                            //catch pro chybu zpracovani certifikatu
-                            snackbarCer.Show();
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception exc)
-        {
-            //cath chzba nahravani souboru
-        }
-    }
-
-    void OnEnded(FileEndedEventArgs e)
-    {
-        if(e.Success==true)
-        {
-            snackbarSuccess.Show();
-        }
-        else
-        {
-            snackbarError.Show();
-        }
-    }
-
-    void OnWritten(FileWrittenEventArgs e)
-    {
-        snackbarLoad.Show();
-    }
-
-    /// <summary>
-    /// Nahrani souboru reportuje progress nahravani, certifikatz moc male neni potreba
-    /// </summary>
-    /// <param name="e"></param>
-    void OnProgressed(FileProgressedEventArgs e)
-    {
-        Console.WriteLine($"File: {e.File.Name} Progress: {e.Percentage}");
-    }
 }

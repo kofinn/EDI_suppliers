@@ -144,6 +144,17 @@ else
             </DataGridColumn>
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.SFID)" Caption="SFID" Editable="true" />
             <DataGridColumn TItem="Partner" Field="@nameof(Partner.Cert)" Caption="Certifikát" Editable="true">
+                <DisplayTemplate>
+                    @{
+                        if (context.Cert.ToString() != null)
+                        {
+                            string? link = context.Cert.ToString();
+                            <Blazorise.Link To="@link">
+                                Certifikát
+                            </Blazorise.Link>
+                        }
+                    }
+                </DisplayTemplate>
                 <EditTemplate>
                     <FileEdit Changed="@OnChanged" Written="@OnWritten" Ended="@OnEnded">@fileName</FileEdit>"
                     @{
@@ -216,7 +227,7 @@ else
     int? pkselectGw;
     bool selectGWdisable = true;
     string SSID;
-    string pathCert = @"E:\Cert";
+    string pathCert = @"\Cert";
     string path;
     string fileName = "Certifikat";
 
@@ -246,6 +257,46 @@ else
     void OnRowInserted(SavedRowItem<Partner, Dictionary<string, object>> e)
     {
         var partner = e.Item;
+
+        DirectoryInfo cert = new DirectoryInfo(pathCert);
+        if (!cert.Exists)
+        {
+            cert.Create();
+        }
+
+        //vytvoření slozky pro dodavateleID
+        DirectoryInfo supp = new DirectoryInfo(Path.Combine(partner.Name));
+        if (!supp.Exists)
+        {
+            supp.Create();
+        }
+
+        //kopie souboru
+        try
+        {
+            string temp = partner.Cert.Replace("temp", partner.Name);
+
+            File.Copy(partner.Cert, partner.Cert.Replace("temp", partner.Name));
+            partner.Cert = partner.Cert.Replace("temp", partner.Name);
+
+            //Nacteni certifikatu
+            try
+            {
+                X509Certificate certificate = X509Certificate.CreateFromCertFile(partner.Cert);
+                partner.CertDate = DateTime.Parse(certificate.GetExpirationDateString());
+            }
+
+            catch (Exception exc)
+            {
+                //catch pro chybu zpracovani certifikatu
+                snackbarCer.Show();
+            }
+        }
+        catch
+        {
+            snackbarError.Show();
+        }
+
         PartnerService.Add(partner);
         ResetState();
     }
@@ -279,8 +330,6 @@ else
 
     async Task OnChanged(FileChangedEventArgs e)
     {
-        string mfgId = "50015";
-
         try
         {
             foreach (var file in e.Files)
@@ -301,32 +350,19 @@ else
                     }
 
                     //vytvoření slozky pro dodavateleID
-                    DirectoryInfo supp = new DirectoryInfo(Path.Combine(pathCert, mfgId));
+                    DirectoryInfo supp = new DirectoryInfo(Path.Combine(pathCert, "temp"));
                     if (!supp.Exists)
                     {
                         supp.Create();
                     }
 
-                    path = Path.Combine(pathCert, mfgId, file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
+                    path = Path.Combine(pathCert, "temp", file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
                     fileName = file.Name;
 
                     using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
                     {
                         stream.CopyTo(outputFileStream);
                         outputFileStream.Close();
-
-                        //Nacteni certifikatu
-                        try
-                        {
-                            X509Certificate certificate = X509Certificate.CreateFromCertFile(path);
-                            DateTime results = DateTime.Parse(certificate.GetExpirationDateString());
-                        }
-
-                        catch (Exception exc)
-                        {
-                            //catch pro chybu zpracovani certifikatu
-                            snackbarCer.Show();
-                        }
                     }
                 }
             }
