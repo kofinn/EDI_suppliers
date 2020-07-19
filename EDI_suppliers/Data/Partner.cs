@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace EDI_suppliers.Data
 {
-   public enum EdiType
+    public enum EdiType
     {
         OFTP2, ISDN
     }
@@ -38,7 +36,7 @@ namespace EDI_suppliers.Data
 
             //    }
             //}   
-            get;set;
+            get; set;
         }
         [Display(Name = "SFID")]
         public string SFID { get; set; }

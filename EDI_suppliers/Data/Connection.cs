@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace EDI_suppliers.Data
 {
     public enum Type
     {
-        WebEDI,EDI,email
+        WebEDI, EDI, email
     }
     public class Connection
     {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EDI_suppliers.Data;
+﻿using EDI_suppliers.Data;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EDI_suppliers.Services
 {

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EDI_suppliers.Data
 {
     public enum Plant
     {
-        P1,P2
+        P1, P2
     }
     public class Supplier
     {

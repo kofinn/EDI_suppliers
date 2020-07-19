@@ -1,9 +1,8 @@
-﻿using System;
+﻿using EDI_suppliers.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EDI_suppliers.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace EDI_suppliers.Services
 {
@@ -34,7 +33,7 @@ namespace EDI_suppliers.Services
         public async Task<Supplier> Add(Supplier supplier)
         {
             List<Supplier> suppliers = await _context.Suppliers.ToListAsync();
-            if(suppliers.Where(x=> x.MfgId == supplier.MfgId).Count()>0)
+            if (suppliers.Where(x => x.MfgId == supplier.MfgId).Count() > 0)
             {
                 return null;
             }

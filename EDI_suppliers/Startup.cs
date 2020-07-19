@@ -1,26 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using EDI_suppliers.Areas.Identity;
+using EDI_suppliers.Data;
+using EDI_suppliers.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using EDI_suppliers.Areas.Identity;
-using EDI_suppliers.Data;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Net.Http;
-using EDI_suppliers.Services;
-using Blazorise;
-using Blazorise.Icons.FontAwesome;
-using Blazorise.Bootstrap;
 
 namespace EDI_suppliers
 {
@@ -49,7 +43,7 @@ namespace EDI_suppliers
             })
             .AddBootstrapProviders()
             .AddFontAwesomeIcons();
-            
+
 
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -64,7 +58,7 @@ namespace EDI_suppliers
             });
 
 
-            services.AddSingleton<HttpClient>(); 
+            services.AddSingleton<HttpClient>();
             services.AddSignalR();
 
             //Login security settings
