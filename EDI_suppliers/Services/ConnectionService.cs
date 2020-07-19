@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EDI_suppliers.Data;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace EDI_suppliers.Services
 {
