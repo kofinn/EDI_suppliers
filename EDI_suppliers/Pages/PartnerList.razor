@@ -253,15 +253,6 @@ else
         fileName = "Certifikat";
     }
 
-    bool OnCustomFilter(Partner filtr)
-    {
-        if(string.IsNullOrEmpty(customFilterValue))
-        {
-            return true;
-        }
-        return true;
-    }
-
     protected override async Task OnInitializedAsync()
     {
         partners = await PartnerService.Get();
@@ -371,7 +362,7 @@ else
                         supp.Create();
                     }
 
-                    path = Path.Combine(pathCert, "temp", file.Name + "_" + DateTime.Now.ToString("yyMMDDHHmm"));
+                    path = Path.Combine(pathCert, "temp", file.Name + "_" + DateTime.Now.ToString("yyMMddHHmm"));
                     fileName = file.Name;
 
                     using (FileStream outputFileStream = new FileStream(path, FileMode.Create))
